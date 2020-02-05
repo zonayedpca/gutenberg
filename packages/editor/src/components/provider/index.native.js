@@ -127,7 +127,9 @@ class NativeEditorProvider extends Component {
 				name === getUnregisteredTypeHandlerName();
 			const unsupportedBlockNames = blocks
 				.filter( isUnsupportedBlock )
-				.map( ( block ) => block.attributes.originalName );
+				.map(
+					( block ) => block.attributes.originalName || '<unnamed>'
+				);
 			RNReactNativeGutenbergBridge.editorDidMount(
 				unsupportedBlockNames
 			);
