@@ -345,7 +345,11 @@ export function* autosave( options ) {
 	yield dispatch( STORE_KEY, 'savePost', { isAutosave: true, ...options } );
 }
 
-export function* __experimentalLocalAutosave() {
+/**
+ * Action generator used in signalling that the post should be locally
+ * autosaved (e.g. on the Web, it might be committed to Session Storage).
+ */
+export function* localAutosave() {
 	const post = yield select( STORE_KEY, 'getCurrentPost' );
 	const title = yield select( STORE_KEY, 'getEditedPostAttribute', 'title' );
 	const content = yield select(
