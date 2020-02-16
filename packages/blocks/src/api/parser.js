@@ -243,7 +243,8 @@ export function getBlockAttribute(
 	let value;
 
 	switch ( attributeSchema.source ) {
-		// undefined source means that it's an attribute serialized to the block's "comment"
+		// An undefined source means that it's an attribute serialized to the
+		// block's "comment".
 		case undefined:
 			value = commentAttributes
 				? commentAttributes[ attributeKey ]
@@ -325,12 +326,19 @@ export function getMigratedBlock( block, parsedAttributes ) {
 	const blockType = getBlockType( block.name );
 
 	const { deprecated: deprecatedDefinitions } = blockType;
+	// Bail early if there are no registered deprecations to be handled.
 	if ( ! deprecatedDefinitions || ! deprecatedDefinitions.length ) {
 		return block;
 	}
 
 	const { originalContent, innerBlocks } = block;
 
+	// By design, blocks lack any sort of version tracking. Instead, to process
+	// outdated content it operates a queue out of all the defined attribute
+	// shapes and tries each definition until the input produces a valid result.
+	// This mechanism seeks to avoid poluting the user-space with machine
+	// specific code. An invalid block is thus a block that could not be matched
+	// successfully to any of the registered deprecation definitions.
 	for ( let i = 0; i < deprecatedDefinitions.length; i++ ) {
 		// A block can opt into a migration even if the block is valid by
 		// defining isEligible on its deprecation. If the block is both valid
@@ -404,8 +412,13 @@ export function getMigratedBlock( block, parsedAttributes ) {
  */
 export function createBlockWithFallback( blockNode ) {
 	const { blockName: originalName } = blockNode;
+	// The tripartite structure of the block type includes its attributes, inner
+	// blocks, and inner HTML. It's important to distinguish inner blocks from
+	// the HTML content of the block as only the latter is relevant for block
+	// validation and edit operations.
 	let { attrs: attributes, innerBlocks = [], innerHTML } = blockNode;
 	const { innerContent } = blockNode;
+	// Blocks that don't have a registered handler are considered "freeform".
 	const freeformContentFallbackBlock = getFreeformContentHandlerName();
 	const unregisteredFallbackBlock =
 		getUnregisteredTypeHandlerName() || freeformContentFallbackBlock;
@@ -419,6 +432,9 @@ export function createBlockWithFallback( blockNode ) {
 	// freeform content fallback.
 	let name = originalName || freeformContentFallbackBlock;
 
+	// TODO: move these fallbacks to a separate function / file as it muddies
+	// readability. It could also be a source of micro-optimizations for a site
+	// that doesn't need them.
 	// Convert 'core/cover-image' block in existing content to 'core/cover'.
 	if ( 'core/cover-image' === name ) {
 		name = 'core/cover';
@@ -531,6 +547,7 @@ export function createBlockWithFallback( blockNode ) {
 	// as invalid, or future serialization attempt results in an error.
 	block.originalContent = block.originalContent || innerHTML;
 
+	// Ensure all necessary migrations are applied to the block.
 	block = getMigratedBlock( block, attributes );
 
 	if ( block.validationIssues && block.validationIssues.length > 0 ) {
@@ -586,7 +603,7 @@ export function serializeBlockNode( blockNode, options = {} ) {
 	let childIndex = 0;
 	const content = innerContent
 		.map( ( item ) =>
-			// `null` denotes a nested block, otherwise we have an HTML fragment
+			// `null` denotes a nested block, otherwise we have an HTML fragment.
 			item !== null
 				? item
 				: serializeBlockNode( innerBlocks[ childIndex++ ], options )
@@ -617,7 +634,20 @@ const createParse = ( parseImplementation ) => ( content ) =>
 	}, [] );
 
 /**
- * Parses the post content with a PegJS grammar and returns a list of blocks.
+ * Utilizes an optimized token driven parser based on the Gutenberg grammar spec
+ * defined through a parsing expression grammar to take advantage of the regular
+ * cadence provided by block delimiters -- composed syntactically through HTML
+ * comments -- which, given a general HTML document as an input, returns a block
+ * list array representation.
+ *
+ * This is a recursive-descent parser that scans linearly once through the input
+ * document. Instead of directly recursing it utilizes a trampoline mechanism to
+ * prevent stack overflow. This initial pass is mainly interested in separating
+ * and isolating the blocks serialized in the document and manifestly not in the
+ * content within the blocks.
+ *
+ * @see
+ * https://developer.wordpress.org/block-editor/packages/packages-block-serialization-default-parser/
  *
  * @param {string} content The post content.
  *
