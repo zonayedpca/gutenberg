@@ -336,7 +336,7 @@ export function getMigratedBlock( block, parsedAttributes ) {
 	// By design, blocks lack any sort of version tracking. Instead, to process
 	// outdated content it operates a queue out of all the defined attribute
 	// shapes and tries each definition until the input produces a valid result.
-	// This mechanism seeks to avoid poluting the user-space with machine
+	// This mechanism seeks to avoid polluting the user-space with machine-
 	// specific code. An invalid block is thus a block that could not be matched
 	// successfully to any of the registered deprecation definitions.
 	for ( let i = 0; i < deprecatedDefinitions.length; i++ ) {
