@@ -338,7 +338,7 @@ export function getMigratedBlock( block, parsedAttributes ) {
 	// shapes and tries each definition until the input produces a valid result.
 	// This mechanism seeks to avoid polluting the user-space with machine-
 	// specific code. An invalid block is thus a block that could not be matched
-	// successfully to any of the registered deprecation definitions.
+	// successfully with any of the registered deprecation definitions.
 	for ( let i = 0; i < deprecatedDefinitions.length; i++ ) {
 		// A block can opt into a migration even if the block is valid by
 		// defining isEligible on its deprecation. If the block is both valid
@@ -634,7 +634,7 @@ const createParse = ( parseImplementation ) => ( content ) =>
 	}, [] );
 
 /**
- * Utilizes an optimized token driven parser based on the Gutenberg grammar spec
+Utilizes an optimized token-driven parser based on the Gutenberg grammar spec
  * defined through a parsing expression grammar to take advantage of the regular
  * cadence provided by block delimiters -- composed syntactically through HTML
  * comments -- which, given a general HTML document as an input, returns a block
