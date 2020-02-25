@@ -396,12 +396,13 @@ export function getBlockTransforms( direction, blockTypeOrName ) {
 /**
  * Switch one or more blocks into one or more blocks of the new block type.
  *
- * @param {Array|Object} blocks Blocks array or block object.
- * @param {string}       name   Block name.
+ * @param {Array|Object} blocks          Blocks array or block object.
+ * @param {string}       name            Block name.
+ * @param {boolean}      isGroupingBlock Set to true to bypass default grouping block selection.
  *
  * @return {?Array} Array of blocks or null.
  */
-export function switchToBlockType( blocks, name ) {
+export function switchToBlockType( blocks, name, isGroupingBlock ) {
 	const blocksArray = castArray( blocks );
 	const isMultiBlock = blocksArray.length > 1;
 	const firstBlock = blocksArray[ 0 ];
@@ -413,7 +414,8 @@ export function switchToBlockType( blocks, name ) {
 	if (
 		! isContainerGroupBlock( name ) &&
 		isMultiBlock &&
-		! isBlockSelectionOfSameType( blocksArray )
+		! isBlockSelectionOfSameType( blocksArray ) &&
+		! isGroupingBlock
 	) {
 		return null;
 	}

@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -18,4 +19,31 @@ export const settings = {
 		html: false,
 	},
 	edit,
+	transforms: {
+		from: [
+			{
+				type: 'block',
+				isMultiBlock: true,
+				blocks: [ '*' ],
+				__experimentalConvert( blocks ) {
+					// Avoid transforming a single `core/template-part` block.
+					if ( blocks.length === 1 && blocks[ 0 ].name === name ) {
+						return;
+					}
+
+					return createBlock(
+						name,
+						{},
+						blocks.map( ( block ) =>
+							createBlock(
+								block.name,
+								block.attributes,
+								block.innerBlocks
+							)
+						)
+					);
+				},
+			},
+		],
+	},
 };

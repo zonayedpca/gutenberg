@@ -14,7 +14,8 @@ export default function TemplatePartInnerBlocks() {
 	);
 	return (
 		<InnerBlocks
-			__experimentalBlocks={ blocks }
+			// Allow initial blocks from a block transform to load, if any.
+			__experimentalBlocks={ blocks.length === 0 ? undefined : blocks }
 			onInput={ onInput }
 			onChange={ onChange }
 		/>

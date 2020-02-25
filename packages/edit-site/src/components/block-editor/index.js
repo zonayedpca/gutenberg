@@ -15,11 +15,13 @@ import {
 	BlockList,
 	ButtonBlockerAppender,
 } from '@wordpress/block-editor';
+import { Popover } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { useEditorContext } from '../editor';
+import TemplatePartConverter from '../template-part-converter';
 import NavigateToLink from '../navigate-to-link';
 import Sidebar from '../sidebar';
 
@@ -68,7 +70,9 @@ export default function BlockEditor() {
 			onChange={ onChange }
 			useSubRegistry={ false }
 		>
+			<Popover.Slot name="block-toolbar" />
 			<BlockEditorKeyboardShortcuts />
+			<TemplatePartConverter />
 			<URLPopover.LinkViewer.Fill>
 				{ useCallback(
 					( fillProps ) => (
