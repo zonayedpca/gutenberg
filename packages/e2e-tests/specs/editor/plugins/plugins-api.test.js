@@ -5,6 +5,7 @@ import {
 	activatePlugin,
 	clickBlockAppender,
 	clickBlockToolbarButton,
+	clickButton,
 	clickOnMoreMenuItem,
 	createNewPost,
 	deactivatePlugin,
@@ -124,7 +125,8 @@ describe( 'Using Plugins API', () => {
 
 	describe( 'Block Settings Menu Item', () => {
 		it( 'Should render a new item', async () => {
-			await clickBlockToolbarButton( 'My new plugin' );
+			await clickBlockToolbarButton( 'More options' );
+			await clickButton( 'My new plugin' );
 
 			expect( console ).toHaveLoggedWith( 'Block clicked' );
 		} );
