@@ -330,6 +330,7 @@ describe( 'Multi-block selection', () => {
 			const elements = Array.from(
 				document.querySelectorAll( '[data-type="core/paragraph"]' )
 			);
+			elements[ 0 ].scrollIntoView();
 			const rect1 = elements[ 0 ].getBoundingClientRect();
 			const rect2 = elements[ 1 ].getBoundingClientRect();
 			const winRect = window.frameElement.getBoundingClientRect();
