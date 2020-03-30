@@ -620,15 +620,27 @@ add_filter( 'block_editor_settings', 'gutenberg_extend_block_editor_styles' );
  * @return array Filtered editor settings.
  */
 function gutenberg_extend_block_editor_styles_html( $settings ) {
+	$handles = array(
+		'wp-block-editor',
+		'wp-block-library',
+		'wp-edit-blocks',
+	);
+
+	$block_registry = WP_Block_Type_Registry::get_instance();
+
+	foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
+		if ( ! empty( $block_type->style ) ) {
+			$handles[] = $block_type->style;
+		}
+
+		if ( ! empty( $block_type->editor_style ) ) {
+			$handles[] = $block_type->editor_style;
+		}
+	}
+
 	ob_start();
 
-	wp_print_styles(
-		array(
-			'wp-block-editor',
-			'wp-block-library',
-			'wp-edit-blocks',
-		)
-	);
+	wp_print_styles( $handles );
 	wp_styles()->done = array();
 
 	$settings['editor_style_html'] = ob_get_clean();
