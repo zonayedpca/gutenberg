@@ -5,7 +5,7 @@
  *
  * @param {*} object Object to test.
  *
- * @return {boolean} Whether object is a generator.
+ * @return {object is Iterator<unknown> & Iterable<unknown>} Whether object is a generator.
  */
 export default function isGenerator( object ) {
 	// Check that iterator (next) and iterable (Symbol.iterator) interfaces are satisfied.

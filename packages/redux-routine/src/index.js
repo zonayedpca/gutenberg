@@ -4,6 +4,9 @@
 import isGenerator from './is-generator';
 import createRuntime from './runtime';
 
+/** @typedef {import('redux').AnyAction} AnyAction */
+/** @typedef {Record<string, AnyAction>} Controls */
+
 /**
  * Creates a Redux middleware, given an object of controls where each key is an
  * action type for which to act upon, the value a function which returns either
@@ -12,9 +15,9 @@ import createRuntime from './runtime';
  * value of the yield assignment. If the control handler returns undefined, the
  * execution is not continued.
  *
- * @param {Object} controls Object of control handlers.
+ * @param {Record<string, AnyAction>} controls Object of control handlers.
  *
- * @return {Function} Co-routine runtime
+ * @return {import('redux').Middleware} Co-routine runtime
  */
 export default function createMiddleware( controls = {} ) {
 	return ( store ) => {
