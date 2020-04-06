@@ -95,7 +95,7 @@ function VisualEditor( { settings } ) {
 			<IFrame
 				className="edit-post-visual-editor"
 				style={ inlineStyles }
-				head={ settings.editor_style_html }
+				head={ window.__editorStyles.html }
 				styles={ settings.styles }
 			>
 				<BlockSelectionClearer>

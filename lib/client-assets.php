@@ -638,16 +638,21 @@ function gutenberg_extend_block_editor_styles_html( $settings ) {
 		}
 	}
 
+	$handles = array_unique( $handles );
+	$done = wp_styles()->done;
+
 	ob_start();
 
-	wp_print_styles( $handles );
 	wp_styles()->done = array();
+	wp_styles()->do_items( $handles );
+	wp_styles()->done = $done;
 
-	$settings['editor_style_html'] = ob_get_clean();
+	$editor_styles = wp_json_encode( array( 'html' => ob_get_clean() ) );
 
-	return $settings;
+	echo "<script>window.__editorStyles = $editor_styles</script>";
 }
-add_filter( 'block_editor_settings', 'gutenberg_extend_block_editor_styles_html' );
+add_action( 'admin_footer-post.php', 'gutenberg_extend_block_editor_styles_html' );
+add_action( 'admin_footer-post-new.php', 'gutenberg_extend_block_editor_styles_html' );
 
 /**
  * Load a block pattern by name.
