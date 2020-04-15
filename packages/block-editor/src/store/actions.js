@@ -37,19 +37,38 @@ function* ensureDefaultBlock() {
 }
 
 /**
- * Returns an action object used in signalling that blocks state should be
- * reset to the specified array of blocks, taking precedence over any other
- * content reflected as an edit in state.
+ * Generator which resets blocks, also resetting selection state if required.
  *
  * @param {Array} blocks Array of blocks.
- *
- * @return {Object} Action object.
  */
-export function resetBlocks( blocks ) {
-	return {
+export function* resetBlocks( blocks ) {
+	yield {
 		type: 'RESET_BLOCKS',
 		blocks,
 	};
+
+	const selectionStartClientId = yield select(
+		'core/block-editor',
+		'getBlockSelectionStart'
+	);
+	const selectionStartBlock = yield select(
+		'core/block-editor',
+		'getBlock',
+		selectionStartClientId
+	);
+	const selectionEndClientId = yield select(
+		'core/block-editor',
+		'getBlockSelectionEnd'
+	);
+	const selectionEndBlock = yield select(
+		'core/block-editor',
+		'getBlock',
+		selectionEndClientId
+	);
+
+	if ( ! selectionStartBlock || ! selectionEndBlock ) {
+		yield clearSelectedBlock();
+	}
 }
 
 /**

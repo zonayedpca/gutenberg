@@ -1142,17 +1142,11 @@ _Returns_
 
 <a name="resetBlocks" href="#resetBlocks">#</a> **resetBlocks**
 
-Returns an action object used in signalling that blocks state should be
-reset to the specified array of blocks, taking precedence over any other
-content reflected as an edit in state.
+Generator which resets blocks, also resetting selection state if required.
 
 _Parameters_
 
 -   _blocks_ `Array`: Array of blocks.
-
-_Returns_
-
--   `Object`: Action object.
 
 <a name="resetSelection" href="#resetSelection">#</a> **resetSelection**
 
