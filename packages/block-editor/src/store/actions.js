@@ -51,21 +51,31 @@ export function* resetBlocks( blocks ) {
 		'core/block-editor',
 		'getBlockSelectionStart'
 	);
+	const selectionEndClientId = yield select(
+		'core/block-editor',
+		'getBlockSelectionEnd'
+	);
+
+	// Return early if there are no selected blocks, nothing further needs to
+	// be done.
+	if ( ! selectionStartClientId && ! selectionEndClientId ) {
+		return;
+	}
+
 	const selectionStartBlock = yield select(
 		'core/block-editor',
 		'getBlock',
 		selectionStartClientId
 	);
-	const selectionEndClientId = yield select(
-		'core/block-editor',
-		'getBlockSelectionEnd'
-	);
+
 	const selectionEndBlock = yield select(
 		'core/block-editor',
 		'getBlock',
 		selectionEndClientId
 	);
 
+	// If there was a selected block, but it no longer exists after
+	// RESET_BLOCKS, clear the block selection state.
 	if ( ! selectionStartBlock || ! selectionEndBlock ) {
 		yield clearSelectedBlock();
 	}

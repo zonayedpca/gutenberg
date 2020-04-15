@@ -34,12 +34,139 @@ import { select } from '../controls';
 
 describe( 'actions', () => {
 	describe( 'resetBlocks', () => {
-		it( 'should return the RESET_BLOCKS actions', () => {
+		it( 'yields the RESET_BLOCKS action', () => {
 			const blocks = [];
-			const result = resetBlocks( blocks );
-			expect( result ).toEqual( {
+			const resetBlocksGenerator = resetBlocks( blocks );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
 				type: 'RESET_BLOCKS',
 				blocks,
+			} );
+		} );
+
+		it( 'should not yield the CLEAR_SELECTED_BLOCK action if there are no selected blocks', () => {
+			const blocks = [];
+			const resetBlocksGenerator = resetBlocks( blocks );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				type: 'RESET_BLOCKS',
+				blocks,
+			} );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionStart',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionEnd',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next() ).toEqual( {
+				value: undefined,
+				done: true,
+			} );
+		} );
+
+		it( 'should not yield the CLEAR_SELECTED_BLOCK action if there are selection blocks and they were not removed by RESET_BLOCKS', () => {
+			const blocks = [];
+			const startBlockClientId = 'start-block';
+			const endBlockClientId = 'end-block';
+			const resetBlocksGenerator = resetBlocks( blocks );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				type: 'RESET_BLOCKS',
+				blocks,
+			} );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionStart',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect(
+				resetBlocksGenerator.next( startBlockClientId ).value
+			).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionEnd',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect(
+				resetBlocksGenerator.next( endBlockClientId ).value
+			).toEqual( {
+				args: [ startBlockClientId ],
+				selectorName: 'getBlock',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next( {} ).value ).toEqual( {
+				args: [ endBlockClientId ],
+				selectorName: 'getBlock',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next( {} ) ).toEqual( {
+				value: undefined,
+				done: true,
+			} );
+		} );
+
+		it( 'yields the CLEAR_SELECTED_BLOCK action if there are selected blocks and they were removed by RESET_BLOCKS', () => {
+			const blocks = [];
+			const startBlockClientId = 'start-block';
+			const endBlockClientId = 'end-block';
+			const resetBlocksGenerator = resetBlocks( blocks );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				type: 'RESET_BLOCKS',
+				blocks,
+			} );
+
+			expect( resetBlocksGenerator.next().value ).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionStart',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect(
+				resetBlocksGenerator.next( startBlockClientId ).value
+			).toEqual( {
+				args: [],
+				selectorName: 'getBlockSelectionEnd',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect(
+				resetBlocksGenerator.next( endBlockClientId ).value
+			).toEqual( {
+				args: [ startBlockClientId ],
+				selectorName: 'getBlock',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next( null ).value ).toEqual( {
+				args: [ endBlockClientId ],
+				selectorName: 'getBlock',
+				storeName: 'core/block-editor',
+				type: 'SELECT',
+			} );
+
+			expect( resetBlocksGenerator.next( null ).value ).toEqual( {
+				type: 'CLEAR_SELECTED_BLOCK',
 			} );
 		} );
 	} );
