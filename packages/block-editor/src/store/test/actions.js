@@ -73,7 +73,7 @@ describe( 'actions', () => {
 			} );
 		} );
 
-		it( 'should not yield the CLEAR_SELECTED_BLOCK action if there are selection blocks and they were not removed by RESET_BLOCKS', () => {
+		it( 'should not yield the CLEAR_SELECTED_BLOCK action if there are selected blocks and they were not removed by RESET_BLOCKS', () => {
 			const blocks = [];
 			const startBlockClientId = 'start-block';
 			const endBlockClientId = 'end-block';
