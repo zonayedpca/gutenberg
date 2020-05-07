@@ -8,12 +8,12 @@ notifications:
     on_success: never
     on_failure: change
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-    - $HOME/.jest-cache
-    - $HOME/.npm
-    - $HOME/.nvm/.cache
+# cache:
+#   directories:
+#     - $HOME/.composer/cache
+#     - $HOME/.jest-cache
+#     - $HOME/.npm
+#     - $HOME/.nvm/.cache
 
 branches:
   only:
@@ -96,77 +96,77 @@ install:
 
 jobs:
   include:
-    - name: Lint
-      install:
-        - npm ci
-        # eslint-plugin-import/no-extraneous-dependencies relies on modules to
-        # be "installed", which in practice requires that packages be built,
-        # presumably so that pkg.main can be resolved.
-        #
-        # See: https://github.com/benmosher/eslint-plugin-import/blob/92caa35/resolvers/node/index.js
-        - node ./bin/packages/build.js
-      script:
-        - npm run lint
+    # - name: Lint
+    #   install:
+    #     - npm ci
+    #     # eslint-plugin-import/no-extraneous-dependencies relies on modules to
+    #     # be "installed", which in practice requires that packages be built,
+    #     # presumably so that pkg.main can be resolved.
+    #     #
+    #     # See: https://github.com/benmosher/eslint-plugin-import/blob/92caa35/resolvers/node/index.js
+    #     - node ./bin/packages/build.js
+    #   script:
+    #     - npm run lint
 
-    - name: Lint ES5 only
-      install:
-        - npm ci
-        - npm run build
-      script:
-        - npx eslint --parser-options=ecmaVersion:5 --no-eslintrc --no-ignore ./build/**/*.js
+    # - name: Lint ES5 only
+    #   install:
+    #     - npm ci
+    #     - npm run build
+    #   script:
+    #     - npx eslint --parser-options=ecmaVersion:5 --no-eslintrc --no-ignore ./build/**/*.js
 
-    - name: Typecheck
-      install:
-        - npm ci
-      script:
-        - npm run build:package-types
+    # - name: Typecheck
+    #   install:
+    #     - npm ci
+    #   script:
+    #     - npm run build:package-types
 
 
-    - name: Build artifacts
-      install:
-        # A "full" install is executed, since `npm ci` does not always exit
-        # with an error status code if the lock file is inaccurate.
-        #
-        # See: https://github.com/WordPress/gutenberg/issues/16157
-        - npm install
-      script:
-        - npm run check-local-changes
+    # - name: Build artifacts
+    #   install:
+    #     # A "full" install is executed, since `npm ci` does not always exit
+    #     # with an error status code if the lock file is inaccurate.
+    #     #
+    #     # See: https://github.com/WordPress/gutenberg/issues/16157
+    #     - npm install
+    #   script:
+    #     - npm run check-local-changes
 
-    - name: License compatibility
-      install:
-        - npm ci
-      script:
-        - npm run check-licenses
+    # - name: License compatibility
+    #   install:
+    #     - npm ci
+    #   script:
+    #     - npm run check-licenses
 
-    - name: JavaScript unit tests
-      env: INSTALL_WORDPRESS=false
-      install:
-        - npm ci
-        # It's not necessary to run the full build, since Jest can interpret
-        # source files with `babel-jest`. Some packages have their own custom
-        # build tasks, however. These must be run.
-        - npx lerna run build
-      script:
-        - npm run test-unit -- --ci --maxWorkers=2 --cacheDirectory="$HOME/.jest-cache"
+    # - name: JavaScript unit tests
+    #   env: INSTALL_WORDPRESS=false
+    #   install:
+    #     - npm ci
+    #     # It's not necessary to run the full build, since Jest can interpret
+    #     # source files with `babel-jest`. Some packages have their own custom
+    #     # build tasks, however. These must be run.
+    #     - npx lerna run build
+    #   script:
+    #     - npm run test-unit -- --ci --maxWorkers=2 --cacheDirectory="$HOME/.jest-cache"
 
-    - name: JavaScript native mobile tests
-      install:
-        - npm ci
-        # It's not necessary to run the full build, since Jest can interpret
-        # source files with `babel-jest`. Some packages have their own custom
-        # build tasks, however. These must be run.
-        - npx lerna run build
-      script:
-        - npm run test-unit:native -- --ci --maxWorkers=2 --cacheDirectory="$HOME/.jest-cache"
+    # - name: JavaScript native mobile tests
+    #   install:
+    #     - npm ci
+    #     # It's not necessary to run the full build, since Jest can interpret
+    #     # source files with `babel-jest`. Some packages have their own custom
+    #     # build tasks, however. These must be run.
+    #     - npx lerna run build
+    #   script:
+    #     - npm run test-unit:native -- --ci --maxWorkers=2 --cacheDirectory="$HOME/.jest-cache"
 
-    - name: PHP unit tests
-      script:
-        - npm run test-php && npm run test-unit-php-multisite
+    # - name: PHP unit tests
+    #   script:
+    #     - npm run test-php && npm run test-unit-php-multisite
 
-    - name: PHP unit tests (PHP 5.6)
-      env: LOCAL_PHP=5.6-fpm
-      script:
-        - npm run test-php && npm run test-unit-php-multisite
+    # - name: PHP unit tests (PHP 5.6)
+    #   env: LOCAL_PHP=5.6-fpm
+    #   script:
+    #     - npm run test-php && npm run test-unit-php-multisite
 
     - name: E2E tests (Admin) (1/4)
       env: FORCE_REDUCED_MOTION=true
@@ -174,62 +174,62 @@ jobs:
         - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
         - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 0' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Admin) (2/4)
-      env: FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 1' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Admin) (2/4)
+    #   env: FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 1' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Admin) (3/4)
-      env: FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 2' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Admin) (3/4)
+    #   env: FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 2' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Admin) (4/4)
-      env: FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 3' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Admin) (4/4)
+    #   env: FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 3' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Author) (1/4)
-      env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 0' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Author) (1/4)
+    #   env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 0' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Author) (2/4)
-      env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 1' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Author) (2/4)
+    #   env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 1' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Author) (3/4)
-      env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 2' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Author) (3/4)
+    #   env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 2' < ~/.jest-e2e-tests )
 
-    - name: E2E tests (Author) (4/4)
-      env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
-      script:
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
-        - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 3' < ~/.jest-e2e-tests )
+    # - name: E2E tests (Author) (4/4)
+    #   env: E2E_ROLE=author FORCE_REDUCED_MOTION=true
+    #   script:
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --listTests > ~/.jest-e2e-tests
+    #     - $( npm bin )/wp-scripts test-e2e --config=./packages/e2e-tests/jest.config.js --cacheDirectory="$HOME/.jest-cache" --runTestsByPath $( awk 'NR % 4 == 3' < ~/.jest-e2e-tests )
 
-    - name: E2E Mobile tests (iOS)
-      os: osx
-      language: objective-c
-      osx_image: xcode11.3
-      env:
-        - TEST_RN_PLATFORM=ios
-      before_install:
-        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install
-      install:
-        - npm ci
-      script:
-        - npm run native test:e2e:ios:local
+    # - name: E2E Mobile tests (iOS)
+    #   os: osx
+    #   language: objective-c
+    #   osx_image: xcode11.3
+    #   env:
+    #     - TEST_RN_PLATFORM=ios
+    #   before_install:
+    #     - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+    #     - source ~/.nvm/nvm.sh
+    #     - nvm install
+    #   install:
+    #     - npm ci
+    #   script:
+    #     - npm run native test:e2e:ios:local
 
   allow_failures:
     # nothing is allowed to fail at the moment
