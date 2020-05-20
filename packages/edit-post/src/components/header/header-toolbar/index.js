@@ -20,6 +20,7 @@ import { plus } from '@wordpress/icons';
 
 function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 	const {
+		isFocusMode,
 		hasFixedToolbar,
 		isInserterEnabled,
 		isTextModeEnabled,
@@ -47,6 +48,9 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 			previewDeviceType: select(
 				'core/edit-post'
 			).__experimentalGetPreviewDeviceType(),
+			isFocusMode: select( 'core/edit-post' ).isFeatureActive(
+				'focusMode'
+			),
 		};
 	}, [] );
 	const isLargeViewport = useViewportMatch( 'medium' );
@@ -77,11 +81,17 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 					'Generic label for block inserter button'
 				) }
 			/>
-			<ToolSelector />
-			<EditorHistoryUndo />
-			<EditorHistoryRedo />
-			<TableOfContents hasOutlineItemsDisabled={ isTextModeEnabled } />
-			<BlockNavigationDropdown isDisabled={ isTextModeEnabled } />
+			{ ! isFocusMode && (
+				<>
+					<ToolSelector />
+					<EditorHistoryUndo />
+					<EditorHistoryRedo />
+					<TableOfContents
+						hasOutlineItemsDisabled={ isTextModeEnabled }
+					/>
+					<BlockNavigationDropdown isDisabled={ isTextModeEnabled } />
+				</>
+			) }
 			{ displayBlockToolbar && (
 				<div className="edit-post-header-toolbar__block-toolbar">
 					<BlockToolbar hideDragHandle />
