@@ -7,8 +7,5 @@
  * @return {string} The manipulated text.
  */
 export default function( settings, text ) {
-	if ( settings.connectorRegExp ) {
-		return text.replace( settings.connectorRegExp, ' ' );
-	}
-	return text;
+	return text.replace( settings.connectorRegExp, ' ' );
 }

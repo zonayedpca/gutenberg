@@ -7,8 +7,5 @@
  * @return {string} The manipulated text.
  */
 export default function( settings, text ) {
-	if ( settings.HTMLEntityRegExp ) {
-		return text.replace( settings.HTMLEntityRegExp, 'a' );
-	}
-	return text;
+	return text.replace( settings.HTMLEntityRegExp, 'a' );
 }
