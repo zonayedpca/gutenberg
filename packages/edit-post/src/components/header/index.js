@@ -26,7 +26,7 @@ function Header( {
 		hasActiveMetaboxes,
 		isPublishSidebarOpened,
 		isSaving,
-		isFocusMode,
+		hasReducedUI,
 	} = useSelect(
 		( select ) => ( {
 			hasActiveMetaboxes: select( 'core/edit-post' ).hasMetaBoxes(),
@@ -34,8 +34,8 @@ function Header( {
 				'core/edit-post'
 			).isPublishSidebarOpened(),
 			isSaving: select( 'core/edit-post' ).isSavingMetaBoxes(),
-			isFocusMode: select( 'core/edit-post' ).isFeatureActive(
-				'focusMode'
+			hasReducedUI: select( 'core/edit-post' ).isFeatureActive(
+				'reducedUI'
 			),
 		} ),
 		[]
@@ -53,7 +53,7 @@ function Header( {
 				/>
 			</div>
 			<div className="edit-post-header__settings">
-				{ ! isFocusMode && (
+				{ ! hasReducedUI && (
 					<>
 						{ ! isPublishSidebarOpened && (
 							// This button isn't completely hidden by the publish sidebar.

@@ -26,6 +26,7 @@ import {
 	EnablePluginDocumentSettingPanelOption,
 	EnablePublishSidebarOption,
 	EnablePanelOption,
+	EnableFeature,
 } from './options';
 import MetaBoxesSection from './meta-boxes-section';
 
@@ -46,6 +47,20 @@ export function OptionsModal( { isModalActive, isViewable, closeModal } ) {
 			<Section title={ __( 'General' ) }>
 				<EnablePublishSidebarOption
 					label={ __( 'Pre-publish checks' ) }
+				/>
+			</Section>
+			<Section title={ __( 'Writing Mode' ) }>
+				<EnableFeature
+					featureName="reducedUI"
+					label={ __( 'Reduced UI' ) }
+				/>
+				<EnableFeature
+					featureName="themeStyles"
+					label={ __( 'Theme Styles' ) }
+				/>
+				<EnableFeature
+					featureName="focusMode"
+					label={ __( 'Spotlight' ) }
 				/>
 			</Section>
 			<Section title={ __( 'Document panels' ) }>

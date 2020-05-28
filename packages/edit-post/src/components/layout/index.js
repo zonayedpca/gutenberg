@@ -72,7 +72,7 @@ function Layout() {
 		previousShortcut,
 		nextShortcut,
 		hasBlockSelected,
-		isFocusMode,
+		hasReducedUI,
 	} = useSelect( ( select ) => {
 		return {
 			hasFixedToolbar: select( 'core/edit-post' ).isFeatureActive(
@@ -98,8 +98,8 @@ function Layout() {
 			nextShortcut: select(
 				'core/keyboard-shortcuts'
 			).getAllShortcutRawKeyCombinations( 'core/edit-post/next-region' ),
-			isFocusMode: select( 'core/edit-post' ).isFeatureActive(
-				'focusMode'
+			hasReducedUI: select( 'core/edit-post' ).isFeatureActive(
+				'reducedUI'
 			),
 		};
 	}, [] );
@@ -233,7 +233,7 @@ function Layout() {
 						</>
 					}
 					footer={
-						! isFocusMode &&
+						! hasReducedUI &&
 						! isMobileViewport &&
 						isRichEditingEnabled &&
 						mode === 'visual' && (

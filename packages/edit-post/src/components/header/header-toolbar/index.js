@@ -20,7 +20,7 @@ import { plus } from '@wordpress/icons';
 
 function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 	const {
-		isFocusMode,
+		hasReducedUI,
 		hasFixedToolbar,
 		isInserterEnabled,
 		isTextModeEnabled,
@@ -48,8 +48,8 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 			previewDeviceType: select(
 				'core/edit-post'
 			).__experimentalGetPreviewDeviceType(),
-			isFocusMode: select( 'core/edit-post' ).isFeatureActive(
-				'focusMode'
+			hasReducedUI: select( 'core/edit-post' ).isFeatureActive(
+				'reducedUI'
 			),
 		};
 	}, [] );
@@ -57,6 +57,10 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 
 	const displayBlockToolbar =
 		! isLargeViewport || previewDeviceType !== 'Desktop' || hasFixedToolbar;
+
+	if ( hasReducedUI && ! displayBlockToolbar ) {
+		return null;
+	}
 
 	const toolbarAriaLabel = displayBlockToolbar
 		? /* translators: accessibility text for the editor toolbar when Top Toolbar is on */
@@ -69,20 +73,20 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 			className="edit-post-header-toolbar"
 			aria-label={ toolbarAriaLabel }
 		>
-			<Button
-				className="edit-post-header-toolbar__inserter-toggle"
-				isPrimary
-				isPressed={ isInserterOpen }
-				onClick={ onToggleInserter }
-				disabled={ ! isInserterEnabled }
-				icon={ plus }
-				label={ _x(
-					'Add block',
-					'Generic label for block inserter button'
-				) }
-			/>
-			{ ! isFocusMode && (
+			{ ! hasReducedUI && (
 				<>
+					<Button
+						className="edit-post-header-toolbar__inserter-toggle"
+						isPrimary
+						isPressed={ isInserterOpen }
+						onClick={ onToggleInserter }
+						disabled={ ! isInserterEnabled }
+						icon={ plus }
+						label={ _x(
+							'Add block',
+							'Generic label for block inserter button'
+						) }
+					/>
 					<ToolSelector />
 					<EditorHistoryUndo />
 					<EditorHistoryRedo />

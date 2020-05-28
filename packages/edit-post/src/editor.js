@@ -2,7 +2,7 @@
  * External dependencies
  */
 import memize from 'memize';
-import { size, map, without } from 'lodash';
+import { size, map, without, omit } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -42,6 +42,7 @@ class Editor extends Component {
 		settings,
 		hasFixedToolbar,
 		focusMode,
+		hesThemeStyles,
 		hiddenBlockTypes,
 		blockTypes,
 		preferredStyleVariations,
@@ -49,7 +50,7 @@ class Editor extends Component {
 		updatePreferredStyleVariations
 	) {
 		settings = {
-			...settings,
+			...( hesThemeStyles ? settings : omit( settings, [ 'styles' ] ) ),
 			__experimentalPreferredStyleVariations: {
 				value: preferredStyleVariations,
 				onChange: updatePreferredStyleVariations,
@@ -83,6 +84,7 @@ class Editor extends Component {
 			settings,
 			hasFixedToolbar,
 			focusMode,
+			hesThemeStyles,
 			post,
 			postId,
 			initialEdits,
@@ -103,6 +105,7 @@ class Editor extends Component {
 			settings,
 			hasFixedToolbar,
 			focusMode,
+			hesThemeStyles,
 			hiddenBlockTypes,
 			blockTypes,
 			preferredStyleVariations,
@@ -154,6 +157,7 @@ export default compose( [
 				isFeatureActive( 'fixedToolbar' ) ||
 				__experimentalGetPreviewDeviceType() !== 'Desktop',
 			focusMode: isFeatureActive( 'focusMode' ),
+			hesThemeStyles: isFeatureActive( 'themeStyles' ),
 			post: getEntityRecord( 'postType', postType, postId ),
 			preferredStyleVariations: getPreference(
 				'preferredStyleVariations'
