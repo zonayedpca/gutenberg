@@ -74,7 +74,7 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 			aria-label={ toolbarAriaLabel }
 		>
 			{ ! hasReducedUI && (
-				<>
+				<div className="edit-post-header-toolbar__left">
 					<Button
 						className="edit-post-header-toolbar__inserter-toggle"
 						isPrimary
@@ -94,7 +94,7 @@ function HeaderToolbar( { onToggleInserter, isInserterOpen } ) {
 						hasOutlineItemsDisabled={ isTextModeEnabled }
 					/>
 					<BlockNavigationDropdown isDisabled={ isTextModeEnabled } />
-				</>
+				</div>
 			) }
 			{ displayBlockToolbar && (
 				<div className="edit-post-header-toolbar__block-toolbar">
