@@ -1,13 +1,18 @@
 /**
  * External dependencies
  */
-import { Platform, findNodeHandle } from 'react-native';
+import { Platform, findNodeHandle, Clipboard } from 'react-native';
 import { partial, first, castArray, last, compact } from 'lodash';
 /**
  * WordPress dependencies
  */
 import { ToolbarButton, Picker } from '@wordpress/components';
-import { getBlockType, getDefaultBlockName } from '@wordpress/blocks';
+import {
+	getBlockType,
+	getDefaultBlockName,
+	serialize,
+	pasteHandler,
+} from '@wordpress/blocks';
 import { __, sprintf } from '@wordpress/i18n';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { withInstanceId, compose } from '@wordpress/compose';
@@ -31,6 +36,10 @@ const BlockActionsMenu = ( {
 	blockTitle,
 	isEmptyDefaultBlock,
 	anchorNodeRef,
+	getBlocksByClientId,
+	selectedBlockClientId,
+	removeBlocks,
+	replaceBlocks,
 } ) => {
 	const pickerRef = useRef();
 	const moversOptions = { keys: [ 'icon', 'actionTitle' ], blockTitle };
@@ -77,14 +86,38 @@ const BlockActionsMenu = ( {
 		disabled: isLast,
 	};
 
+	const copyButtonOption = {
+		id: 'copyButtonOption',
+		label: 'Copy block',
+		value: 'copyButtonOption',
+		icon: forwardButtonIcon,
+	};
+
+	const cutButtonOption = {
+		id: 'cutButtonOption',
+		label: 'Cut block',
+		value: 'cutButtonOption',
+		icon: forwardButtonIcon,
+	};
+
+	const pasteButtonOption = {
+		id: 'pasteButtonOption',
+		label: 'Paste block',
+		value: 'pasteButtonOption',
+		icon: forwardButtonIcon,
+	};
+
 	const options = compact( [
 		wrapBlockMover && backwardButtonOption,
 		wrapBlockMover && forwardButtonOption,
 		wrapBlockSettings && settingsOption,
+		copyButtonOption,
+		cutButtonOption,
+		pasteButtonOption,
 		deleteOption,
 	] );
 
-	function onPickerSelect( value ) {
+	async function onPickerSelect( value ) {
 		switch ( value ) {
 			case deleteOption.value:
 				onDelete();
@@ -97,6 +130,28 @@ const BlockActionsMenu = ( {
 				break;
 			case backwardButtonOption.value:
 				onMoveUp();
+				break;
+			case copyButtonOption.value:
+				const copyBlock = getBlocksByClientId( selectedBlockClientId );
+				const copySerialized = serialize( copyBlock );
+				Clipboard.setString( copySerialized );
+				break;
+			case cutButtonOption.value:
+				const cutBlock = getBlocksByClientId( selectedBlockClientId );
+				const cutSerialized = serialize( cutBlock );
+				Clipboard.setString( cutSerialized );
+				removeBlocks( selectedBlockClientId );
+				break;
+			case pasteButtonOption.value:
+				const storedBlock = await Clipboard.getString();
+				const pasteBlock = pasteHandler( {
+					HTML: storedBlock,
+					plainText: storedBlock,
+					mode: 'BLOCKS',
+					canUserUseUnfilteredHTML: false,
+				} );
+
+				replaceBlocks( selectedBlockClientId, pasteBlock );
 				break;
 		}
 	}
@@ -149,6 +204,8 @@ export default compose(
 			getBlockOrder,
 			getBlockName,
 			getBlock,
+			getBlocksByClientId,
+			getSelectedBlockClientIds,
 		} = select( 'core/block-editor' );
 		const normalizedClientIds = castArray( clientIds );
 		const block = getBlock( normalizedClientIds );
@@ -177,18 +234,25 @@ export default compose(
 			rootClientId,
 			blockTitle,
 			isEmptyDefaultBlock,
+			getBlocksByClientId,
+			selectedBlockClientId: getSelectedBlockClientIds(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientIds, rootClientId } ) => {
-		const { moveBlocksDown, moveBlocksUp } = dispatch(
-			'core/block-editor'
-		);
+		const {
+			moveBlocksDown,
+			moveBlocksUp,
+			removeBlocks,
+			replaceBlocks,
+		} = dispatch( 'core/block-editor' );
 		const { openGeneralSidebar } = dispatch( 'core/edit-post' );
 
 		return {
 			onMoveDown: partial( moveBlocksDown, clientIds, rootClientId ),
 			onMoveUp: partial( moveBlocksUp, clientIds, rootClientId ),
 			openGeneralSidebar: () => openGeneralSidebar( 'edit-post/block' ),
+			removeBlocks,
+			replaceBlocks,
 		};
 	} ),
 	withInstanceId
