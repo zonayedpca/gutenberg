@@ -3,6 +3,8 @@
  */
 import { Platform, findNodeHandle, Clipboard } from 'react-native';
 import { partial, first, castArray, last, compact } from 'lodash';
+import { displayNotice } from 'react-native-gutenberg-bridge';
+
 /**
  * WordPress dependencies
  */
@@ -135,12 +137,20 @@ const BlockActionsMenu = ( {
 				const copyBlock = getBlocksByClientId( selectedBlockClientId );
 				const copySerialized = serialize( copyBlock );
 				Clipboard.setString( copySerialized );
+				displayNotice(
+					// translators: displayed right after the block is copied.
+					__( 'Copied!' )
+				);
 				break;
 			case cutButtonOption.value:
 				const cutBlock = getBlocksByClientId( selectedBlockClientId );
 				const cutSerialized = serialize( cutBlock );
 				Clipboard.setString( cutSerialized );
 				removeBlocks( selectedBlockClientId );
+				displayNotice(
+					// translators: displayed right after the block is cut.
+					__( 'Cut!' )
+				);
 				break;
 			case pasteButtonOption.value:
 				const storedBlock = await Clipboard.getString();
