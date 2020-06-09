@@ -14,6 +14,7 @@ import { createBlock } from '@wordpress/blocks';
 import {
 	KeyboardAwareFlatList,
 	ReadableContentView,
+	withNotices,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -155,6 +156,7 @@ export class BlockList extends Component {
 			isFloatingToolbarVisible,
 			isStackedHorizontally,
 			horizontalAlignment,
+			noticeUI,
 		} = this.props;
 		const { parentScrollRef } = extraProps;
 
@@ -221,7 +223,7 @@ export class BlockList extends Component {
 					ListEmptyComponent={ ! isReadOnly && this.renderEmptyList }
 					ListFooterComponent={ this.renderBlockListFooter }
 				/>
-
+				{ noticeUI }
 				{ this.shouldShowInnerBlockAppender() && (
 					<View
 						style={ {
@@ -252,7 +254,14 @@ export class BlockList extends Component {
 			parentWidth,
 			marginVertical = styles.defaultBlock.marginTop,
 			marginHorizontal = styles.defaultBlock.marginLeft,
+			noticeOperations,
 		} = this.props;
+
+		const displayNotice = ( message ) => {
+			noticeOperations.removeAllNotices();
+			noticeOperations.createNotice( { status: 'info', content: message } );
+		};
+
 		return (
 			<BlockListItem
 				isStackedHorizontally={ isStackedHorizontally }
@@ -271,6 +280,7 @@ export class BlockList extends Component {
 				onCaretVerticalPositionChange={
 					this.onCaretVerticalPositionChange
 				}
+				onNotice={ displayNotice }
 			/>
 		);
 	}
@@ -352,6 +362,7 @@ export default compose( [
 		};
 	} ),
 	withPreferredColorScheme,
+	withNotices,
 ] )( BlockList );
 
 class EmptyListComponent extends Component {

@@ -30,6 +30,7 @@ const BlockMobileToolbar = ( {
 	isStackedHorizontally,
 	blockWidth,
 	anchorNodeRef,
+	onNotice,
 } ) => {
 	const wrapBlockSettings = blockWidth < BREAKPOINTS.wrapSettings;
 	const wrapBlockMover = blockWidth <= BREAKPOINTS.wrapMover;
@@ -59,6 +60,7 @@ const BlockMobileToolbar = ( {
 				isStackedHorizontally={ isStackedHorizontally }
 				onDelete={ onDelete }
 				anchorNodeRef={ anchorNodeRef }
+				onNotice={ onNotice }
 			/>
 		</View>
 	);

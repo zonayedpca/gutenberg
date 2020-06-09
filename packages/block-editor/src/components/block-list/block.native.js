@@ -129,6 +129,7 @@ class BlockListBlock extends Component {
 			marginVertical,
 			marginHorizontal,
 			isInnerBlockSelected,
+			onNotice,
 		} = this.props;
 
 		if ( ! attributes || ! blockType ) {
@@ -199,6 +200,7 @@ class BlockListBlock extends Component {
 						>
 							{ isSelected && (
 								<BlockMobileToolbar
+									onNotice={ onNotice }
 									clientId={ clientId }
 									onDelete={ onDeleteBlock }
 									isStackedHorizontally={
