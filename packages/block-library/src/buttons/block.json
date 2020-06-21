@@ -1,9 +1,13 @@
 {
 	"name": "core/buttons",
 	"category": "design",
+	"attributes": {
+		"contentJustification": {
+			"type": "string"
+		}
+	},
 	"supports": {
-		"align": true,
-		"alignWide": false,
+		"align": [ "wide", "full" ],
 		"lightBlockWrapper": true
 	}
 }
