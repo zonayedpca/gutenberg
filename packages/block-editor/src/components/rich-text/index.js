@@ -128,6 +128,10 @@ function RichTextWrapper(
 		__unstableEmbedURLOnPaste,
 		__unstableDisableFormats: disableFormats,
 		disableLineBreaks,
+		unstableOnFocus,
+		__unstableAllowPrefixTransformations,
+		__unstableMultilineRootTag,
+		__unstableMobileNoFocusOnMount,
 		...props
 	},
 	forwardedRef
@@ -528,7 +532,6 @@ function RichTextWrapper(
 
 	const content = (
 		<RichText
-			{ ...props }
 			clientId={ clientId }
 			identifier={ identifier }
 			ref={ ref }
@@ -563,6 +566,11 @@ function RichTextWrapper(
 			disabled={ disabled }
 			start={ startAttr }
 			reversed={ reversed }
+			unstableOnFocus={ unstableOnFocus }
+			__unstableAllowPrefixTransformations={
+				__unstableAllowPrefixTransformations
+			}
+			__unstableMultilineRootTag={ __unstableMultilineRootTag }
 			// Native props.
 			onCaretVerticalPositionChange={ onCaretVerticalPositionChange }
 			blockIsSelected={
@@ -571,6 +579,7 @@ function RichTextWrapper(
 					: blockIsSelected
 			}
 			shouldBlurOnUnmount={ shouldBlurOnUnmount }
+			__unstableMobileNoFocusOnMount={ __unstableMobileNoFocusOnMount }
 		>
 			{ ( {
 				isSelected: nestedIsSelected,
@@ -599,6 +608,7 @@ function RichTextWrapper(
 						{ ( { listBoxId, activeId, onKeyDown } ) => (
 							<TagName
 								{ ...editableProps }
+								{ ...props }
 								aria-autocomplete={
 									listBoxId ? 'list' : undefined
 								}
