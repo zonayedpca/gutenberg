@@ -15,6 +15,9 @@ export { metadata, name };
 
 export const settings = {
 	title: __( 'Site Title' ),
+	description: __(
+		'The name of the site is an important setting that determines how the website is displayed in various places, including the title bar of a web browser, search engine results, and RSS feeds. It can also be edited in Settings > General.'
+	),
 	icon,
 	edit,
 };
