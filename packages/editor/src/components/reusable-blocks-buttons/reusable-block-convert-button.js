@@ -12,6 +12,7 @@ import { hasBlockSupport, isReusableBlock } from '@wordpress/blocks';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { BlockSettingsMenuControls } from '@wordpress/block-editor';
+import { reusableBlock } from '@wordpress/icons';
 
 export function ReusableBlockConvertButton( {
 	isVisible,
@@ -29,6 +30,7 @@ export function ReusableBlockConvertButton( {
 				<>
 					{ ! isReusable && (
 						<MenuItem
+							icon={ reusableBlock }
 							onClick={ () => {
 								onConvertToReusable();
 								onClose();
