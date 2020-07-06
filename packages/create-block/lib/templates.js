@@ -1,10 +1,16 @@
 /**
  * External dependencies
  */
+const { command } = require( 'execa' );
 const glob = require( 'fast-glob' );
 const { readFile } = require( 'fs' ).promises;
-const { fromPairs } = require( 'lodash' );
+const { fromPairs, isObject } = require( 'lodash' );
 const { join } = require( 'path' );
+
+/**
+ * WordPress dependencies
+ */
+const lazyImport = require( '@wordpress/lazy-import' );
 
 /**
  * Internal dependencies
@@ -60,18 +66,46 @@ const getOutputTemplates = async ( name ) => {
 	);
 };
 
+const externalTemplateExists = async ( templateName ) => {
+	try {
+		await command( `npm view ${ templateName }` );
+	} catch ( error ) {
+		return false;
+	}
+	return true;
+};
+
 const getBlockTemplate = async ( templateName ) => {
-	if ( ! predefinedBlockTemplates[ templateName ] ) {
+	if ( predefinedBlockTemplates[ templateName ] ) {
+		return {
+			...predefinedBlockTemplates[ templateName ],
+			outputTemplates: await getOutputTemplates( templateName ),
+		};
+	}
+	if ( ! ( await externalTemplateExists( templateName ) ) ) {
 		throw new CLIError(
-			`Invalid block template type name. Allowed values: ${ Object.keys(
-				predefinedBlockTemplates
-			).join( ', ' ) }.`
+			`Invalid block template type name: "${ templateName }". Allowed values: ` +
+				Object.keys( predefinedBlockTemplates )
+					.map( ( name ) => `"${ name }"` )
+					.join( ', ' ) +
+				', or an existing npm package name.'
 		);
 	}
-	return {
-		...predefinedBlockTemplates[ templateName ],
-		outputTemplates: await getOutputTemplates( templateName ),
-	};
+
+	try {
+		const blockTemplate = await lazyImport( templateName );
+		if ( ! isObject( blockTemplate ) ) {
+			throw new Error();
+		}
+		return {
+			...blockTemplate,
+			outputTemplates: await getOutputTemplates( templateName ),
+		};
+	} catch ( error ) {
+		throw new CLIError(
+			`Invalid template definition provided in "${ templateName }" package.`
+		);
+	}
 };
 
 const getDefaultValues = ( blockTemplate ) => {

@@ -140,19 +140,19 @@ The following variables are passed to the template files:
 -   `style` (default: `file:./build/style-index.css`)
 -   `wpScripts` (default: `true`)
 
-### `template.json`
+### Template definition
 
 _Example:_
 
-```json
-{
-	"defaultValues": {
-		"namespace": "my-plugin",
-		"title": "My plugin",
-		"dashicon": "palmtree",
-		"version": "1.2.3"
-	}
-}
+```js
+return {
+	defaultValues: {
+		namespace: 'my-plugin',
+		title: 'My plugin',
+		dashicon: 'palmtree',
+		version: '1.2.3',
+	},
+};
 ```
 
 ## WP-CLI
