@@ -62,7 +62,7 @@ export const LinkPicker = ( {
   const onSubmit = () => pickLink( directEntry );
   
   return (
-    <View>
+    <View style={ { height: 300 } }>
       <NavigationHeader
         screen={ __( 'Add URL' ) }
         leftButtonOnPress={ cancel }

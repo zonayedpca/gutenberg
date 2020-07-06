@@ -42,6 +42,9 @@ export default function LinkPickerResults( {
 	return (
 		<FlatList
 			data={ links }
+			style={ { height: 200 } }
+			// height={ 300 }
+			// contentContainerStyle={ { height: 300 } }
 			keyboardShouldPersistTaps="always"
 			renderItem={ ( { item } ) => (
 				<BottomSheet.LinkSuggestionItemCell
