@@ -15,8 +15,6 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import useOnBlockDrop from '../use-on-block-drop';
 
-/** @typedef {import('@wordpress/element').WPSyntheticEvent} WPSyntheticEvent */
-
 /**
  * @typedef  {Object} WPBlockDragPosition
  * @property {number} x The horizontal position of a the block being dragged.
