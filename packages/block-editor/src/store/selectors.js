@@ -1036,7 +1036,18 @@ export function isTyping( state ) {
  * @return {boolean} Whether user is dragging blocks.
  */
 export function isDraggingBlocks( state ) {
-	return state.isDraggingBlocks;
+	return !! state.draggedBlocks;
+}
+
+/**
+ * Returns the dragged block client ids.
+ *
+ * @param {Object} state Global application state.
+ *
+ * @return {boolean} Whether user is dragging blocks.
+ */
+export function getDraggedBlockClientIds( state ) {
+	return state.draggedBlocks;
 }
 
 /**
