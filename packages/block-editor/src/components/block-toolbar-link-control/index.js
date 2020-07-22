@@ -96,28 +96,30 @@ export default function ToolbarLinkControl( {
 									controlProps,
 									inputProps,
 									isLoading
-								) => (
-									<InputControl
-										{ ...controlProps }
-										{ ...toolbarItemProps }
-										{ ...inputProps }
-										className="toolbar-link-control__input-control"
-										onChange={ ( value, { event } ) =>
-											inputProps.onChange( event )
-										}
-										prefix={
-											<div className="toolbar-link-control__affix-wrapper">
-												<Icon icon={ linkIcon } />
-											</div>
-										}
-										suffix={
-											<div className="toolbar-link-control__affix-wrapper">
-												{ isLoading && <Spinner /> }
-											</div>
-										}
-									/>
-								) }
-								ref={ ref }
+								) => {
+									return (
+										<InputControl
+											{ ...controlProps }
+											{ ...toolbarItemProps }
+											{ ...inputProps }
+											ref={ ref }
+											className="toolbar-link-control__input-control"
+											onChange={ ( value, { event } ) =>
+												inputProps.onChange( event )
+											}
+											prefix={
+												<div className="toolbar-link-control__affix-wrapper">
+													<Icon icon={ linkIcon } />
+												</div>
+											}
+											suffix={
+												<div className="toolbar-link-control__affix-wrapper">
+													{ isLoading && <Spinner /> }
+												</div>
+											}
+										/>
+									);
+								} }
 							/>
 						</div>
 					) }
