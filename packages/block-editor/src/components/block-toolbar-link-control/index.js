@@ -99,6 +99,7 @@ export default function ToolbarLinkControl( {
 								) => (
 									<InputControl
 										{ ...controlProps }
+										{ ...toolbarItemProps }
 										{ ...inputProps }
 										className="toolbar-link-control__input-control"
 										onChange={ ( value, { event } ) =>
@@ -114,7 +115,6 @@ export default function ToolbarLinkControl( {
 												{ isLoading && <Spinner /> }
 											</div>
 										}
-										{ ...toolbarItemProps }
 									/>
 								) }
 								ref={ ref }
