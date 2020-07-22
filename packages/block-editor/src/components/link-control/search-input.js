@@ -30,7 +30,12 @@ const LinkControlSearchInput = ( {
 	onChange = noop,
 	onSelect = noop,
 	showSuggestions = true,
-	renderSuggestions = ( props ) => <LinkControlSearchResults { ...props } />,
+	renderSuggestions = ( props ) => (
+		<LinkControlSearchResults
+			{ ...props }
+			className="is-vertically-retracted"
+		/>
+	),
 	fetchSuggestions = null,
 	allowDirectEntry = true,
 	showInitialSuggestions = false,
