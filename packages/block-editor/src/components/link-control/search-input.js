@@ -36,6 +36,7 @@ const LinkControlSearchInput = ( {
 			className="is-vertically-retracted"
 		/>
 	),
+	renderControl = null,
 	fetchSuggestions = null,
 	allowDirectEntry = true,
 	showInitialSuggestions = false,
