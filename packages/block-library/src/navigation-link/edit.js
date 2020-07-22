@@ -143,7 +143,7 @@ function NavigationLinkEdit( {
 					initialLink={ link }
 					createSuggestion={ handleCreatePage }
 					close={ () => setIsLinkOpen( false ) }
-					onChange={ setAttributes }
+					onChange={ ( args ) => setAttributes( args ) }
 				/>
 			) }
 			<BlockControls>
