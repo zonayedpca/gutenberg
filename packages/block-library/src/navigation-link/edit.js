@@ -63,6 +63,7 @@ function NavigationLinkEdit( {
 	const { label, opensInNewTab, url, description, rel } = attributes;
 	const link = {
 		url,
+		rel,
 		opensInNewTab,
 	};
 	const { saveEntityRecord } = useDispatch( 'core' );
