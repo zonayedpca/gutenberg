@@ -18,11 +18,13 @@ import {
 	TextareaControl,
 	ToolbarButton,
 	ToolbarGroup,
+	__experimentalToolbarItem as ToolbarItem,
 } from '@wordpress/components';
 import { rawShortcut, displayShortcut } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
 	BlockControls,
+	BlockToolbarLinkControl,
 	InnerBlocks,
 	InspectorControls,
 	RichText,
@@ -135,6 +137,14 @@ function NavigationLinkEdit( {
 
 	return (
 		<Fragment>
+			{ isLinkOpen && (
+				<BlockToolbarLinkControl
+					initialLink={ link }
+					createSuggestion={ handleCreatePage }
+					close={ () => setIsLinkOpen( false ) }
+					onChange={ setAttributes }
+				/>
+			) }
 			<BlockControls>
 				<ToolbarGroup>
 					<KeyboardShortcuts
@@ -223,7 +233,7 @@ function NavigationLinkEdit( {
 							'core/strikethrough',
 						] }
 					/>
-					{ isLinkOpen && (
+					{ false && isLinkOpen && (
 						<Popover
 							position="bottom center"
 							onClose={ () => setIsLinkOpen( false ) }

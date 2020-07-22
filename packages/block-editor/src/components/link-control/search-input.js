@@ -7,7 +7,7 @@ import { noop, omit } from 'lodash';
  * WordPress dependencies
  */
 import { useInstanceId } from '@wordpress/compose';
-import { forwardRef, useState } from '@wordpress/element';
+import { useState, forwardRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -33,8 +33,12 @@ const LinkControlSearchInput = forwardRef(
 			onSelect = noop,
 			showSuggestions = true,
 			renderSuggestions = ( props ) => (
-				<LinkControlSearchResults { ...props } />
+				<LinkControlSearchResults
+					{ ...props }
+					className="is-vertically-retracted"
+				/>
 			),
+			renderControl = null,
 			fetchSuggestions = null,
 			allowDirectEntry = true,
 			showInitialSuggestions = false,
@@ -117,12 +121,13 @@ const LinkControlSearchInput = forwardRef(
 					__experimentalRenderSuggestions={
 						showSuggestions ? handleRenderSuggestions : null
 					}
+					inputRef={ ref }
 					__experimentalFetchLinkSuggestions={ searchHandler }
 					__experimentalHandleURLSuggestions={ true }
 					__experimentalShowInitialSuggestions={
 						showInitialSuggestions
 					}
-					ref={ ref }
+					__experimentalRenderControl={ renderControl }
 				/>
 				{ children }
 			</form>
