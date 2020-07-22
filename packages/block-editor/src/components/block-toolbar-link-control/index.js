@@ -19,7 +19,8 @@ import {
 	link as linkIcon,
 } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useDispatch } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -62,6 +63,13 @@ export default function ToolbarLinkControl( {
 	const { createPage, isCreatingPage, errorMessage } = useCreatePage(
 		createSuggestion
 	);
+
+	const { createErrorNotice } = useDispatch( 'core/notices' );
+	useEffect( () => {
+		if ( errorMessage ) {
+			createErrorNotice( errorMessage, { type: 'snackbar' } );
+		}
+	}, [ errorMessage ] );
 
 	const renderSuggestions = ( props ) => (
 		<Popover focusOnMount={ false } position="bottom">
