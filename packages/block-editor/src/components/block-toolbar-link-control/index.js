@@ -114,7 +114,10 @@ export default function ToolbarLinkControl( {
 											}
 											suffix={
 												<div className="toolbar-link-control__affix-wrapper">
-													{ isLoading && <Spinner /> }
+													{ ( isCreatingPage ||
+														isLoading ) && (
+														<Spinner />
+													) }
 												</div>
 											}
 										/>
