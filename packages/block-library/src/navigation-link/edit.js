@@ -18,7 +18,6 @@ import {
 	TextareaControl,
 	ToolbarButton,
 	ToolbarGroup,
-	__experimentalToolbarItem as ToolbarItem,
 } from '@wordpress/components';
 import { rawShortcut, displayShortcut } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -45,6 +44,7 @@ function NavigationLinkEdit( {
 	attributes,
 	hasDescendants,
 	isSelected,
+	isExperimentalNavScreen = false,
 	isImmediateParentOfSelectedBlock,
 	isParentOfSelectedBlock,
 	setAttributes,
@@ -137,7 +137,7 @@ function NavigationLinkEdit( {
 
 	return (
 		<Fragment>
-			{ isLinkOpen && (
+			{ isExperimentalNavScreen && isLinkOpen && (
 				<BlockToolbarLinkControl
 					initialLink={ link }
 					createSuggestion={ handleCreatePage }
@@ -233,7 +233,7 @@ function NavigationLinkEdit( {
 							'core/strikethrough',
 						] }
 					/>
-					{ false && isLinkOpen && (
+					{ ! isExperimentalNavScreen && isLinkOpen && (
 						<Popover
 							position="bottom center"
 							onClose={ () => setIsLinkOpen( false ) }
@@ -348,6 +348,11 @@ export default compose( [
 			getBlockParentsByBlockName( clientId, 'core/navigation' )
 		);
 		const navigationBlockAttributes = getBlockAttributes( rootBlock );
+		const isExperimentalNavScreen = get(
+			getSettings(),
+			'__experimentalNavigationScreen',
+			false
+		);
 		const colors = get( getSettings(), 'colors', [] );
 		const hasDescendants = !! getClientIdsOfDescendants( [ clientId ] )
 			.length;
@@ -369,6 +374,7 @@ export default compose( [
 		);
 
 		return {
+			isExperimentalNavScreen,
 			isParentOfSelectedBlock,
 			isImmediateParentOfSelectedBlock,
 			hasDescendants,
