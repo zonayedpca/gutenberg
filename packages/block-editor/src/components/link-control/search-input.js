@@ -7,7 +7,12 @@ import { noop, omit } from 'lodash';
  * WordPress dependencies
  */
 import { useInstanceId } from '@wordpress/compose';
-import { forwardRef, useState } from '@wordpress/element';
+import {
+	forwardRef,
+	useRef,
+	useState,
+	useImperativeHandle,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -111,6 +116,13 @@ const LinkControlSearchInput = forwardRef(
 			}
 		};
 
+		const urlInputRef = useRef();
+		useImperativeHandle( ref, () => ( {
+			selectFocusedSuggestion: () => {
+				onSuggestionSelected( focusedSuggestion || { url: value } );
+			},
+		} ) );
+
 		return (
 			<form onSubmit={ onFormSubmit }>
 				<URLInput
@@ -126,7 +138,7 @@ const LinkControlSearchInput = forwardRef(
 						showInitialSuggestions
 					}
 					__experimentalRenderControl={ renderControl }
-					ref={ ref }
+					ref={ urlInputRef }
 				/>
 				{ children }
 			</form>

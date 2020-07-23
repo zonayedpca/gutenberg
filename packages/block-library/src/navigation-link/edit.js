@@ -67,7 +67,7 @@ function NavigationLinkEdit( {
 		opensInNewTab,
 	};
 	const { saveEntityRecord } = useDispatch( 'core' );
-	const [ isLinkOpen, setIsLinkOpen ] = useState( true );
+	const [ isLinkOpen, setIsLinkOpen ] = useState( false );
 	const itemLabelPlaceholder = __( 'Add link…' );
 	const ref = useRef();
 

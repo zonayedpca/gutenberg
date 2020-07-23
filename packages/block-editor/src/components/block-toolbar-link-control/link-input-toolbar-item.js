@@ -15,7 +15,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { link as linkIcon } from '@wordpress/icons';
-import { useContext, useEffect, useState } from '@wordpress/element';
+import { useContext, useEffect, useState, useRef } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 
 /**
@@ -69,8 +69,11 @@ const ToolbarLinkEditorControl = function ( props ) {
 		}
 	}, [ errorMessage ] );
 
+	const searchInputRef = useRef();
+
 	return (
 		<LinkControlSearchInput
+			ref={ searchInputRef }
 			currentLink={ currentLink }
 			placeholder="Start typing"
 			renderSuggestions={ renderSuggestions }
@@ -97,6 +100,23 @@ const ToolbarLinkEditorControl = function ( props ) {
 						value={ inputProps.value }
 						onKeyDown={ ( event ) => {
 							inputProps.onKeyDown( event );
+							// LinkControlSearchInput renders a form which is normally submitted with an Enter key.
+							// In this context however, Reakit calls .preventDefault() on the enter keydown event
+							// so we need to select focused suggestion manually.
+							if ( event.key === 'Enter' ) {
+								// The flow of this keyDown event is quite complex, some of the consumers here are URLInput, InputControl,
+								// LinkControlSearchInput, ToolbarLinkEditorControl, Reakit, some of them talk to each other and keep their
+								// own local state.
+								//
+								// setTimeout seems to be the easiest way to achieve the intended outcome of selecting the suggestion selected
+								// at the time of pressing the enter key. It is quite unintuitive so let's explore some cleaner solutions in the
+								// longer run.
+								setTimeout( () => {
+									if ( searchInputRef?.current ) {
+										searchInputRef.current.selectFocusedSuggestion();
+									}
+								} );
+							}
 							props.onKeyDown( event );
 						} }
 						onChange={ ( value, { event } ) => {
