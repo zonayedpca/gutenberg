@@ -15,11 +15,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { link as linkIcon } from '@wordpress/icons';
-import {
-	useContext,
-	useEffect,
-	useState,
-} from '@wordpress/element';
+import { useContext, useEffect, useState } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 
 /**
