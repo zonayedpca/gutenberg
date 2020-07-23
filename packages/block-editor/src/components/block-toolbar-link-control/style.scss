@@ -1,6 +1,12 @@
 
 // Specificity hack
 .block-editor-block-toolbar.block-editor-block-toolbar {
+
+	[data-experimental-toolbar-item]:focus .components-input-control__container {
+		//box-shadow: inset 0 0 0 2px var(--wp-admin-theme-color);
+		outline: var(--wp-admin-theme-color) auto 2px;
+	}
+
 	.toolbar-link-control__input-group {
 		flex-grow: 1;
 		margin: 0;

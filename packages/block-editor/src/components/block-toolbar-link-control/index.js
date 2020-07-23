@@ -1,34 +1,18 @@
 /**
  * WordPress dependencies
  */
-import {
-	DropdownMenu,
-	Icon,
-	__experimentalInputControl as InputControl,
-	MenuGroup,
-	MenuItem,
-	ToolbarButton,
-	__experimentalToolbarItem as ToolbarItem,
-	ToolbarGroup,
-	Popover,
-	Spinner,
-} from '@wordpress/components';
-import {
-	chevronDown as arrowDownIcon,
-	check as checkIcon,
-	link as linkIcon,
-} from '@wordpress/icons';
+import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { useDispatch } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useMemo, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import BlockControls from '../block-controls';
-import LinkControlSearchInput from '../link-control/search-input';
-import LinkControlSearchResults from '../link-control/search-results';
-import useCreatePage from '../link-control/use-create-page';
+import SettingsToolbarItem from './settings-toolbar-item';
+import LinkInputToolbarItem from './link-input-toolbar-item';
+import computeNiceURL from './compute-nice-url';
+import ToolbarLinkControlContext from './context';
 
 export default function ToolbarLinkControl( {
 	initialLink,
@@ -36,202 +20,69 @@ export default function ToolbarLinkControl( {
 	close,
 	onChange,
 } ) {
-	const [ currentLink, setCurrentLink ] = useState( initialLink );
-	const { opensInNewTab, rel } = currentLink;
-	const [ editUrl, setEditUrl ] = useState(
-		computeNiceURL( currentLink.url )
-	);
-	const [ shouldShowSuggestions, setShouldShowSuggestions ] = useState(
-		true
+	const [ currentLink, setCurrentLink ] = useState( {
+		...initialLink,
+		url: computeNiceURL( initialLink.url ),
+	} );
+
+	const [ preferredDropdown, setPreferredDropdown ] = useState(
+		'suggestions'
 	);
 
-	const updateCurrentLink = ( data, replace = false ) => {
-		setCurrentLink( {
-			...( replace ? {} : currentLink ),
-			...data,
-			url: data.url ? computeNiceURL( data.url ) : editUrl,
-		} );
-	};
+	const updateCurrentLink = useCallback(
+		( data, replace = false ) => {
+			setCurrentLink( {
+				...( replace ? {} : currentLink ),
+				...data,
+				url: data.url ? computeNiceURL( data.url ) : currentLink.url,
+			} );
+		},
+		[ currentLink ]
+	);
 
 	const finishLinkEditing = ( acceptChanges = true ) => {
 		if ( acceptChanges ) {
-			onChange( { ...currentLink, url: editUrl } );
+			onChange( currentLink );
 		}
 		close();
 	};
 
-	const { createPage, isCreatingPage, errorMessage } = useCreatePage(
-		createSuggestion
-	);
-
-	const { createErrorNotice } = useDispatch( 'core/notices' );
-	useEffect( () => {
-		if ( errorMessage ) {
-			createErrorNotice( errorMessage, { type: 'snackbar' } );
-		}
-	}, [ errorMessage ] );
-
-	const renderSuggestions = ( props ) => (
-		<Popover focusOnMount={ false } position="bottom">
-			<LinkControlSearchResults { ...props } />
-		</Popover>
+	const contextValue = useMemo(
+		() => ( {
+			createSuggestion,
+			currentLink,
+			updateCurrentLink,
+			preferredDropdown,
+			setPreferredDropdown,
+		} ),
+		[
+			createSuggestion,
+			currentLink,
+			updateCurrentLink,
+			preferredDropdown,
+			setPreferredDropdown,
+		]
 	);
 
 	return (
 		<BlockControls __experimentalIsExpanded={ true }>
-			<ToolbarGroup className="toolbar-link-control__input-group">
-				<ToolbarItem>
-					{ ( { ref, ...toolbarItemProps } ) => (
-						<div className="toolbar-link-control__input-wrapper">
-							<LinkControlSearchInput
-								currentLink={ currentLink }
-								placeholder="Start typing"
-								renderSuggestions={ renderSuggestions }
-								value={ editUrl }
-								onCreateSuggestion={ createPage }
-								onChange={ ( url ) => {
-									setShouldShowSuggestions( true );
-									setEditUrl( computeNiceURL( url ) );
-								} }
-								onSelect={ ( link ) =>
-									updateCurrentLink( link, true )
-								}
-								showInitialSuggestions={ false }
-								allowDirectEntry
-								showSuggestions={ shouldShowSuggestions }
-								withCreateSuggestion
-								renderControl={ (
-									controlProps,
-									inputProps,
-									isLoading
-								) => {
-									return (
-										<InputControl
-											{ ...controlProps }
-											{ ...toolbarItemProps }
-											{ ...inputProps }
-											ref={ ref }
-											className="toolbar-link-control__input-control"
-											onChange={ ( value, { event } ) =>
-												inputProps.onChange( event )
-											}
-											prefix={
-												<div className="toolbar-link-control__affix-wrapper">
-													<Icon icon={ linkIcon } />
-												</div>
-											}
-											suffix={
-												<div className="toolbar-link-control__affix-wrapper">
-													{ ( isCreatingPage ||
-														isLoading ) && (
-														<Spinner />
-													) }
-												</div>
-											}
-										/>
-									);
-								} }
-							/>
-						</div>
-					) }
-				</ToolbarItem>
-				<ToolbarItem>
-					{ ( toolbarItemProps ) => (
-						<DropdownMenu
-							popoverProps={ { position: 'bottom' } }
-							className="link-option"
-							contentClassName="link-options__popover"
-							icon={ arrowDownIcon }
-							onToggle={ ( isOpen ) => {
-								if ( isOpen ) {
-									setShouldShowSuggestions( false );
-								}
-							} }
-							toggleProps={ {
-								...toolbarItemProps,
-								name: 'link-options',
-								title: __( 'Link options' ),
-							} }
-						>
-							{ ( { onClose } ) => (
-								<>
-									<MenuGroup>
-										<MenuItem
-											icon={ opensInNewTab && checkIcon }
-											onClick={ () => {
-												updateCurrentLink( {
-													opensInNewTab: ! opensInNewTab,
-												} );
-											} }
-										>
-											{ __( 'Open in new tab' ) }
-										</MenuItem>
-										<MenuItem
-											icon={
-												rel === 'nofollow' && checkIcon
-											}
-											onClick={ () => {
-												updateCurrentLink( {
-													rel:
-														currentLink.rel ===
-														'nofollow'
-															? ''
-															: 'nofollow',
-												} );
-											} }
-										>
-											{ __( 'Add nofollow attribute' ) }
-										</MenuItem>
-									</MenuGroup>
-									<MenuGroup>
-										<MenuItem
-											onClick={ () => {
-												setEditUrl( '' );
-												onClose();
-											} }
-										>
-											{ __( 'Remove link' ) }
-										</MenuItem>
-									</MenuGroup>
-								</>
-							) }
-						</DropdownMenu>
-					) }
-				</ToolbarItem>
-			</ToolbarGroup>
-			<ToolbarGroup>
-				<ToolbarButton
-					name="done"
-					title={ __( 'Done' ) }
-					onClick={ () => finishLinkEditing( true ) }
-				>
-					Done
-				</ToolbarButton>
-			</ToolbarGroup>
+			<ToolbarLinkControlContext.Provider value={ contextValue }>
+				<ToolbarGroup>
+					<LinkInputToolbarItem />
+				</ToolbarGroup>
+				<ToolbarGroup className="toolbar-link-control__input-group">
+					<SettingsToolbarItem />
+				</ToolbarGroup>
+				<ToolbarGroup>
+					<ToolbarButton
+						name="done"
+						title={ __( 'Done' ) }
+						onClick={ () => finishLinkEditing( true ) }
+					>
+						Done
+					</ToolbarButton>
+				</ToolbarGroup>
+			</ToolbarLinkControlContext.Provider>
 		</BlockControls>
 	);
-}
-
-export function computeNiceURL( url ) {
-	if ( ! url ) {
-		return '';
-	}
-
-	let urlData;
-	try {
-		urlData = new URL( url );
-	} catch ( e ) {
-		return url;
-	}
-	let displayUrl = '';
-
-	const siteHost = document.location.host;
-	if ( urlData.host && urlData.host !== siteHost ) {
-		displayUrl += urlData.host;
-	}
-	displayUrl += urlData.pathname;
-	if ( urlData.search ) {
-		displayUrl += urlData.search;
-	}
-	return displayUrl;
 }
