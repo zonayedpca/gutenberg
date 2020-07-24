@@ -15,8 +15,10 @@ import {
 	get,
 	identity,
 	difference,
+	map,
 	omitBy,
 	pickBy,
+	pick,
 } from 'lodash';
 
 /**
@@ -245,6 +247,7 @@ const withBlockCache = ( reducer ) => ( state = {}, action ) => {
 		return state;
 	}
 	newState.cache = state.cache ? state.cache : {};
+	newState.getBlocksCache = state.getBlocksCache ? state.getBlocksCache : {};
 
 	/**
 	 * For each clientId provided, traverses up parents, adding the provided clientIds
@@ -381,6 +384,17 @@ const withBlockCache = ( reducer ) => ( state = {}, action ) => {
 		}
 	}
 
+	if ( newState.cache !== state.cache ) {
+		newState.getBlocksCache = {
+			...keys( newState.order ).reduce( ( acc, blockId ) => {
+				acc[ blockId ] = map(
+					newState.order[ blockId ],
+					( id ) => newState.cache[ id ]
+				);
+				return acc;
+			}, {} ),
+		};
+	}
 	return newState;
 };
 
@@ -655,6 +669,8 @@ const withReplaceInnerBlocks = ( reducer ) => ( state, action ) => {
 		);
 	} );
 
+	const restoreCacheKeys = pick( state.getBlocksCache, matchingControllers );
+
 	// The `keepControlledInnerBlocks` prop will keep the inner blocks of the
 	// marked block in the block state so that they can be reattached to the
 	// marked block when we re-insert everything a few lines below.
@@ -699,6 +715,10 @@ const withReplaceInnerBlocks = ( reducer ) => ( state, action ) => {
 			),
 		};
 	}
+	stateAfterInsert.getBlocksCache = {
+		...stateAfterInsert.getBlocksCache,
+		...restoreCacheKeys,
+	};
 	return stateAfterInsert;
 };
 
