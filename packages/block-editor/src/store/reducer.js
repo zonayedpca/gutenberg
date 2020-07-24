@@ -627,9 +627,9 @@ const withReplaceInnerBlocks = ( reducer ) => ( state, action ) => {
 	// Finds every nested inner block controller. We must check the action blocks
 	// and not just the block parent state because some inner block controllers
 	// should be deleted if specified, whereas others should not be deleted. If
-	// a controlled should not be deleted, then we need to avoid deleting its
-	// inner blocks from the block state because its inner blocks will not be
-	// attached to the block in the action.
+	// a controlled block should not be deleted, then we need to avoid deleting
+	// its inner blocks from the block state because its inner blocks will not
+	// be attached to the block in the action.
 	const nestedControllers = {};
 	if ( Object.keys( state.controlledInnerBlocks ).length ) {
 		const stack = [ ...action.blocks ];
@@ -642,6 +642,19 @@ const withReplaceInnerBlocks = ( reducer ) => ( state, action ) => {
 		}
 	}
 
+	// Find out if the clientIds to remove are also used for any other inner
+	// block controllers. If so, this indicates that the controllers share the
+	// same data source, and thus need to be updated together.
+	const matchingControllers = Object.keys(
+		state.controlledInnerBlocks
+	).filter( ( controllerId ) => {
+		const [ firstStored ] = state.order[ controllerId ];
+		const [ firstRemoved ] = state.order[ action.rootClientId ];
+		return (
+			controllerId !== action.rootClientId && firstStored === firstRemoved
+		);
+	} );
+
 	// The `keepControlledInnerBlocks` prop will keep the inner blocks of the
 	// marked block in the block state so that they can be reattached to the
 	// marked block when we re-insert everything a few lines below.
@@ -653,17 +666,25 @@ const withReplaceInnerBlocks = ( reducer ) => ( state, action ) => {
 			clientIds: state.order[ action.rootClientId ],
 		} );
 	}
+
 	let stateAfterInsert = stateAfterBlocksRemoval;
 	if ( action.blocks.length ) {
-		stateAfterInsert = reducer( stateAfterInsert, {
-			...action,
-			type: 'INSERT_BLOCKS',
-			index: 0,
-		} );
+		// The blocks need to be inserted again under each controller which uses
+		// the same data source.
+		[ action.rootClientId, ...matchingControllers ].forEach(
+			( rootClientId ) => {
+				stateAfterInsert = reducer( stateAfterInsert, {
+					...action,
+					rootClientId,
+					type: 'INSERT_BLOCKS',
+					index: 0,
+				} );
+			}
+		);
 
 		// We need to re-attach the block order of the controlled inner blocks.
 		// Otherwise, an inner block controller's blocks will be deleted entirely
-		// from its entity..
+		// from its entity.
 		stateAfterInsert.order = {
 			...stateAfterInsert.order,
 			...reduce(
