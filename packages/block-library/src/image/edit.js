@@ -88,7 +88,7 @@ export function ImageEdit( {
 		width,
 		height,
 		sizeSlug,
-		isInGallery,
+		isListItem,
 	} = attributes;
 
 	const altRef = useRef();
@@ -234,6 +234,12 @@ export function ImageEdit( {
 		};
 	}, [ isTemp ] );
 
+	useEffect( () => {
+		if ( context?.isList ) {
+			setAttributes( { isListItem: context.isList } );
+		}
+	}, [ context ] );
+
 	const isExternal = isExternalImage( id, url );
 	const controls = (
 		<BlockControls>
@@ -281,26 +287,28 @@ export function ImageEdit( {
 	// component remounting. This needs to be fixed.
 	const key = !! url;
 
-	if ( isInGallery ) {
+	const image = url && (
+		<Image
+			attributes={ attributes }
+			setAttributes={ setAttributes }
+			isSelected={ isSelected }
+			insertBlocksAfter={ insertBlocksAfter }
+			onReplace={ onReplace }
+			onSelectImage={ onSelectImage }
+			onSelectURL={ onSelectURL }
+			onUploadError={ onUploadError }
+			containerRef={ ref }
+			allowResize={ allowResize }
+		/>
+	);
+
+	if ( isListItem ) {
 		return (
 			<>
 				{ controls }
 				<Block.li ref={ ref } className={ classes } key={ key }>
 					<figure>
-						{ url && (
-							<Image
-								attributes={ attributes }
-								setAttributes={ setAttributes }
-								isSelected={ isSelected }
-								insertBlocksAfter={ insertBlocksAfter }
-								onReplace={ onReplace }
-								onSelectImage={ onSelectImage }
-								onSelectURL={ onSelectURL }
-								onUploadError={ onUploadError }
-								containerRef={ ref }
-								allowResize={ allowResize }
-							/>
-						) }
+						{ image }
 						{ mediaPlaceholder }
 					</figure>
 				</Block.li>
@@ -312,20 +320,7 @@ export function ImageEdit( {
 		<>
 			{ controls }
 			<Block.figure ref={ ref } className={ classes } key={ key }>
-				{ url && (
-					<Image
-						attributes={ attributes }
-						setAttributes={ setAttributes }
-						isSelected={ isSelected }
-						insertBlocksAfter={ insertBlocksAfter }
-						onReplace={ onReplace }
-						onSelectImage={ onSelectImage }
-						onSelectURL={ onSelectURL }
-						onUploadError={ onUploadError }
-						containerRef={ ref }
-						allowResize={ allowResize }
-					/>
-				) }
+				{ image }
 				{ mediaPlaceholder }
 			</Block.figure>
 		</>
