@@ -56,7 +56,6 @@ export default function ToolbarLinkControl( {
 		() => ( {
 			createSuggestion,
 			currentLink,
-			setCurrentLink,
 			updateCurrentLink,
 			preferredDropdown,
 			setPreferredDropdown,
@@ -64,7 +63,6 @@ export default function ToolbarLinkControl( {
 		[
 			createSuggestion,
 			currentLink,
-			setCurrentLink,
 			updateCurrentLink,
 			preferredDropdown,
 			setPreferredDropdown,
