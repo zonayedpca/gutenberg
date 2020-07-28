@@ -30,30 +30,33 @@ export default function ToolbarLinkControl( {
 	);
 
 	const updateCurrentLink = useCallback(
-		( data, replace = false ) => {
-			setCurrentLink( {
-				...( replace ? {} : currentLink ),
+		( data ) => {
+			const newLink = {
+				...currentLink,
 				...data,
-				url:
-					'url' in data
-						? computeDisplayUrl( data.url )
-						: currentLink.url,
-			} );
+			};
+			if ( currentLink.id && ! data.id ) {
+				delete newLink.id;
+			}
+			if ( 'url' in data ) {
+				newLink.url = computeDisplayUrl( data.url );
+			} else {
+				newLink.url = currentLink.url;
+			}
+			if ( data.title && ! currentLink.label ) {
+				newLink.label = data.title;
+			}
+			setCurrentLink( newLink );
+			onChange( newLink );
 		},
 		[ currentLink ]
 	);
-
-	const finishLinkEditing = ( acceptChanges = true ) => {
-		if ( acceptChanges ) {
-			onChange( currentLink );
-		}
-		close();
-	};
 
 	const contextValue = useMemo(
 		() => ( {
 			createSuggestion,
 			currentLink,
+			setCurrentLink,
 			updateCurrentLink,
 			preferredDropdown,
 			setPreferredDropdown,
@@ -61,6 +64,7 @@ export default function ToolbarLinkControl( {
 		[
 			createSuggestion,
 			currentLink,
+			setCurrentLink,
 			updateCurrentLink,
 			preferredDropdown,
 			setPreferredDropdown,
@@ -78,7 +82,7 @@ export default function ToolbarLinkControl( {
 					<ToolbarButton
 						name="done"
 						title={ __( 'Done' ) }
-						onClick={ () => finishLinkEditing( true ) }
+						onClick={ close }
 					>
 						Done
 					</ToolbarButton>

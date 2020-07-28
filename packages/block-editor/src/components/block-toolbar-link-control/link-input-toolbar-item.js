@@ -84,7 +84,7 @@ const ToolbarLinkEditorControl = function ( props ) {
 				updateCurrentLink( { url } );
 			} }
 			onSelect={ ( link ) => {
-				updateCurrentLink( link, true );
+				updateCurrentLink( link );
 			} }
 			showInitialSuggestions={ false }
 			allowDirectEntry

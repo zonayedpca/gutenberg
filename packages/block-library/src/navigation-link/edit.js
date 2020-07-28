@@ -64,6 +64,7 @@ function NavigationLinkEdit( {
 	const link = {
 		url,
 		rel,
+		label,
 		opensInNewTab,
 	};
 	const { saveEntityRecord } = useDispatch( 'core' );
@@ -93,7 +94,7 @@ function NavigationLinkEdit( {
 
 	// If the LinkControl popover is open and the URL has changed, close the LinkControl and focus the label text.
 	useEffect( () => {
-		if ( isLinkOpen && url ) {
+		if ( isLinkOpen && url && ! isExperimentalNavScreen ) {
 			// Does this look like a URL and have something TLD-ish?
 			if (
 				isURL( prependHTTP( label ) ) &&
