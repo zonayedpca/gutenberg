@@ -69,8 +69,6 @@ export default function ToolbarLinkControl( {
 			<ToolbarLinkControlContext.Provider value={ contextValue }>
 				<ToolbarGroup>
 					<LinkInputToolbarItem />
-				</ToolbarGroup>
-				<ToolbarGroup className="toolbar-link-control__input-group">
 					<SettingsToolbarItem />
 				</ToolbarGroup>
 				<ToolbarGroup>
