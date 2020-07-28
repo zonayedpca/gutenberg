@@ -34,7 +34,10 @@ export default function ToolbarLinkControl( {
 			setCurrentLink( {
 				...( replace ? {} : currentLink ),
 				...data,
-				url: data.url ? computeDisplayUrl( data.url ) : currentLink.url,
+				url:
+					'url' in data
+						? computeDisplayUrl( data.url )
+						: currentLink.url,
 			} );
 		},
 		[ currentLink ]
