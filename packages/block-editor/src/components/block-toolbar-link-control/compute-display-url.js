@@ -1,4 +1,4 @@
-export default function computeNiceURL( url ) {
+export default function computeDisplayUrl( url ) {
 	if ( ! url ) {
 		return '';
 	}

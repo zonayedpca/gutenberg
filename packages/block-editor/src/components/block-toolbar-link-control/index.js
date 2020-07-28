@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from '@wordpress/element';
 import BlockControls from '../block-controls';
 import SettingsToolbarItem from './settings-toolbar-item';
 import LinkInputToolbarItem from './link-input-toolbar-item';
-import computeNiceURL from './compute-nice-url';
+import computeDisplayUrl from './compute-display-url';
 import ToolbarLinkControlContext from './context';
 
 export default function ToolbarLinkControl( {
@@ -22,7 +22,7 @@ export default function ToolbarLinkControl( {
 } ) {
 	const [ currentLink, setCurrentLink ] = useState( {
 		...initialLink,
-		url: computeNiceURL( initialLink.url ),
+		url: computeDisplayUrl( initialLink.url ),
 	} );
 
 	const [ preferredDropdown, setPreferredDropdown ] = useState(
@@ -34,7 +34,7 @@ export default function ToolbarLinkControl( {
 			setCurrentLink( {
 				...( replace ? {} : currentLink ),
 				...data,
-				url: data.url ? computeNiceURL( data.url ) : currentLink.url,
+				url: data.url ? computeDisplayUrl( data.url ) : currentLink.url,
 			} );
 		},
 		[ currentLink ]
