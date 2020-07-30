@@ -90,7 +90,11 @@ const ToolbarLinkEditorControl = function ( props ) {
 			allowDirectEntry
 			showSuggestions={ preferredDropdown === 'suggestions' }
 			withCreateSuggestion
-			renderControl={ ( controlProps, inputProps, isLoading ) => {
+			renderControl={ (
+				controlProps,
+				inputProps,
+				{ isLoading, suggestionsVisible }
+			) => {
 				return (
 					<InputControl
 						{ ...controlProps }
@@ -117,7 +121,18 @@ const ToolbarLinkEditorControl = function ( props ) {
 									}
 								} );
 							}
-							props.onKeyDown( event );
+
+							// When escape is pressed, either:
+							// * Hide suggestions if they're visible
+							// * Stop editing if suggestions are not visible
+							if (
+								event.key === 'Escape' &&
+								suggestionsVisible
+							) {
+								setPreferredDropdown( null );
+							} else {
+								props.onKeyDown( event );
+							}
 						} }
 						onChange={ ( value, { event } ) => {
 							inputProps.onChange( event );
