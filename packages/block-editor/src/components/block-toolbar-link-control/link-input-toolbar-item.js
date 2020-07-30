@@ -127,6 +127,15 @@ const ToolbarLinkEditorControl = function ( props ) {
 							inputProps.onFocus( event );
 							props.onFocus( event );
 						} }
+						onBlur={ ( event ) => {
+							setPreferredDropdown( null );
+							if ( 'onBlur' in inputProps ) {
+								inputProps.onBlur( event );
+							}
+							if ( 'onBlur' in props ) {
+								props.onBlur( event );
+							}
+						} }
 						prefix={
 							<div className="toolbar-link-control__affix-wrapper">
 								<Icon icon={ linkIcon } />
