@@ -51,7 +51,10 @@ export default function HeadingLevelDropdown( {
 	selectedLevel,
 	onChange,
 } ) {
-	const instanceId = useInstanceId( HeadingLevelDropdown );
+	const helpTextId = useInstanceId(
+		HeadingLevelDropdown,
+		'block-library-heading__heading-level-dropdown__help'
+	);
 
 	const getLevelValidity = useHeadingLevelValidator( clientId );
 
@@ -127,11 +130,11 @@ export default function HeadingLevelDropdown( {
 									},
 								};
 							} ) }
-							aria-describedby={ `block-library-heading__heading-level-dropdown__help-${ instanceId }` }
+							aria-describedby={ helpTextId }
 						/>
 					</Toolbar>
 					<p
-						id={ `block-library-heading__heading-level-dropdown__help-${ instanceId }` }
+						id={ helpTextId }
 						className="block-library-heading__heading-level-dropdown__help"
 					>
 						<ExternalLink href="https://www.w3.org/WAI/tutorials/page-structure/headings/">

@@ -78,7 +78,7 @@ export default function useHeadingLevelValidator( currentBlockClientId ) {
 	)[ 0 ];
 	const hasTitle = isTitleSupported && titleIsNotEmpty && titleNode;
 	const hasMultipleH1 = useMemo(
-		() => headings.filter( ( { level } ) => level === 1 ).length > 1,
+		() => headings.some( ( { level } ) => level === 1 ),
 		[ headings ]
 	);
 
