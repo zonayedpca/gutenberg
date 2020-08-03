@@ -139,7 +139,9 @@ export default function Image( {
 		window
 			.fetch( url )
 			.then( ( response ) => response.blob() )
-			.then( ( blob ) => setExternalBlob( blob ) );
+			.then( ( blob ) => setExternalBlob( blob ) )
+			// Do nothing, cannot upload.
+			.catch( () => {} );
 	}, [ id, url, isSelected, externalBlob ] );
 
 	function onResizeStart() {
