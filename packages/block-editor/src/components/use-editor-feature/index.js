@@ -28,22 +28,23 @@ import { useBlockEditContext } from '../block-edit';
  */
 export default function useEditorFeature( featurePath ) {
 	const { name: blockName } = useBlockEditContext();
-	const path = `__experimentalFeatures.${ featurePath }`;
+	const blockPath = `__experimentalFeatures.${ blockName }.${ featurePath }`;
+	const globalPath = `__experimentalFeatures.global.${ featurePath }`;
 
 	const setting = useSelect(
 		( select ) => {
 			const { getBlockSupport } = select( 'core/blocks' );
 
-			const blockSupportValue = getBlockSupport( blockName, path );
+			const blockSupportValue = getBlockSupport( blockName, blockPath );
 			if ( blockSupportValue !== undefined ) {
 				return blockSupportValue;
 			}
 
 			const { getSettings } = select( 'core/block-editor' );
 
-			return get( getSettings(), path );
+			return get( getSettings(), blockPath ) ?? get( getSettings(), globalPath );
 		},
-		[ blockName, path ]
+		[ blockName, blockPath ]
 	);
 
 	return setting;

@@ -596,14 +596,13 @@ function gutenberg_experimental_global_styles_enqueue_assets() {
  * @return array Default features config for the editor.
  */
 function gutenberg_experimental_global_styles_get_editor_features( $config ) {
-	if (
-		empty( $config['global']['features'] ) ||
-		! is_array( $config['global']['features'] )
-	) {
-		return array();
+	$features = array();
+	foreach ( array_keys( $config ) as $context ) {
+		if ( !empty( $config[ $context ]['features'] ) ) {
+			$features[ $context ] = $config[ $context ]['features'];
+		}
 	}
-
-	return $config['global']['features'];
+	return $features;
 }
 
 /**
