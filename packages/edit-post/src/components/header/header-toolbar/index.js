@@ -77,26 +77,31 @@ function HeaderToolbar() {
 				<ToolbarItem
 					as={ ToolSelector }
 					showTooltip={ ! showIconLabels }
+					isTertiary={ showIconLabels }
 				/>
 			) }
 			<ToolbarItem
 				as={ EditorHistoryUndo }
 				showTooltip={ ! showIconLabels }
+				isTertiary={ showIconLabels }
 			/>
 			<ToolbarItem
 				as={ EditorHistoryRedo }
 				showTooltip={ ! showIconLabels }
+				isTertiary={ showIconLabels }
 			/>
 			<ToolbarItem
 				as={ TableOfContents }
 				hasOutlineItemsDisabled={ isTextModeEnabled }
 				repositionDropdown={ showIconLabels && ! isWideViewport }
 				showTooltip={ ! showIconLabels }
+				isTertiary={ showIconLabels }
 			/>
 			<ToolbarItem
 				as={ BlockNavigationDropdown }
 				isDisabled={ isTextModeEnabled }
 				showTooltip={ ! showIconLabels }
+				isTertiary={ showIconLabels }
 			/>
 		</>
 	);
