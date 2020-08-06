@@ -42,7 +42,10 @@ export default function useEditorFeature( featurePath ) {
 
 			const { getSettings } = select( 'core/block-editor' );
 
-			return get( getSettings(), blockPath ) ?? get( getSettings(), globalPath );
+			return (
+				get( getSettings(), blockPath ) ??
+				get( getSettings(), globalPath )
+			);
 		},
 		[ blockName, blockPath ]
 	);
