@@ -131,7 +131,19 @@ function RichTextWrapper(
 		unstableOnFocus,
 		__unstableAllowPrefixTransformations,
 		__unstableMultilineRootTag,
+		// Native props.
 		__unstableMobileNoFocusOnMount,
+		deleteEnter,
+		placeholderTextColor,
+		textAlign,
+		selectionColor,
+		tagsToEliminate,
+		rootTagsToEliminate,
+		disableEditingMenu,
+		fontSize,
+		fontFamily,
+		fontWeight,
+		fontStyle,
 		...props
 	},
 	forwardedRef
@@ -580,6 +592,17 @@ function RichTextWrapper(
 			}
 			shouldBlurOnUnmount={ shouldBlurOnUnmount }
 			__unstableMobileNoFocusOnMount={ __unstableMobileNoFocusOnMount }
+			deleteEnter={ deleteEnter }
+			placeholderTextColor={ placeholderTextColor }
+			textAlign={ textAlign }
+			selectionColor={ selectionColor }
+			tagsToEliminate={ tagsToEliminate }
+			rootTagsToEliminate={ rootTagsToEliminate }
+			disableEditingMenu={ disableEditingMenu }
+			fontSize={ fontSize }
+			fontFamily={ fontFamily }
+			fontWeight={ fontWeight }
+			fontStyle={ fontStyle }
 		>
 			{ ( {
 				isSelected: nestedIsSelected,

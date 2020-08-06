@@ -3,7 +3,7 @@
  */
 import ELEMENTS from './block-wrapper-elements';
 
-export function useBlockProps( props ) {
+export function useBlockProps( props = {} ) {
 	return props;
 }
 
