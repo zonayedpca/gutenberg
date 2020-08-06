@@ -598,7 +598,7 @@ function gutenberg_experimental_global_styles_enqueue_assets() {
 function gutenberg_experimental_global_styles_get_editor_features( $config ) {
 	$features = array();
 	foreach ( array_keys( $config ) as $context ) {
-		if ( !empty( $config[ $context ]['features'] ) ) {
+		if ( ! empty( $config[ $context ]['features'] ) ) {
 			$features[ $context ] = $config[ $context ]['features'];
 		}
 	}
