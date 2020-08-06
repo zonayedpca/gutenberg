@@ -129,11 +129,9 @@ describe( 'Sidebar', () => {
 
 		await openDocumentSettingsSidebar();
 
-		expect( await findSidebarPanelWithTitle( 'General' ) ).toBeDefined();
 		expect(
-			await findSidebarPanelWithTitle( 'Visibility:' )
+			await findSidebarPanelWithTitle( 'Status & visibility' )
 		).toBeDefined();
-		expect( await findSidebarPanelWithTitle( 'Publish:' ) ).toBeDefined();
 		expect(
 			await findSidebarPanelWithTitle( 'Post Format' )
 		).toBeDefined();
@@ -149,8 +147,6 @@ describe( 'Sidebar', () => {
 			const { removeEditorPanel } = wp.data.dispatch( 'core/edit-post' );
 
 			removeEditorPanel( 'post-status' );
-			removeEditorPanel( 'visibility' );
-			removeEditorPanel( 'schedule' );
 			removeEditorPanel( 'post-format' );
 			removeEditorPanel( 'taxonomy-panel-category' );
 			removeEditorPanel( 'taxonomy-panel-post_tag' );
@@ -159,11 +155,9 @@ describe( 'Sidebar', () => {
 			removeEditorPanel( 'discussion-panel' );
 		} );
 
-		expect( await findSidebarPanelWithTitle( 'General' ) ).toBeUndefined();
 		expect(
-			await findSidebarPanelWithTitle( 'Visibility:' )
+			await findSidebarPanelWithTitle( 'Status & visibility' )
 		).toBeUndefined();
-		expect( await findSidebarPanelWithTitle( 'Publish:' ) ).toBeUndefined();
 		expect(
 			await findSidebarPanelWithTitle( 'Post Format' )
 		).toBeUndefined();

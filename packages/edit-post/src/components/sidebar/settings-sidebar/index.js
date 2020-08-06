@@ -10,8 +10,6 @@ import { Platform } from '@wordpress/element';
  */
 import SettingsHeader from '../settings-header';
 import PostStatus from '../post-status';
-import PostVisibility from '../post-visibility';
-import PostSchedule from '../post-schedule';
 import PostFormat from '../post-format';
 import LastRevision from '../last-revision';
 import PostTaxonomies from '../post-taxonomies';
@@ -71,8 +69,6 @@ const SettingsSidebar = () => {
 			{ sidebarName === 'edit-post/document' && (
 				<>
 					<PostStatus />
-					<PostVisibility />
-					<PostSchedule />
 					<PostFormat />
 					<PluginDocumentSettingPanel.Slot />
 					<LastRevision />

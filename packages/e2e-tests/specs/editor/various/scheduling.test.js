@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { createNewPost, openSidebarPanel } from '@wordpress/e2e-test-utils';
+import { clickButton, createNewPost } from '@wordpress/e2e-test-utils';
 
 describe( 'Scheduling', () => {
 	beforeEach( createNewPost );
@@ -19,7 +19,7 @@ describe( 'Scheduling', () => {
 	};
 
 	it( 'Should keep date time UI focused when the previous and next month buttons are clicked', async () => {
-		await openSidebarPanel( 'Publish:' );
+		await clickButton( 'Edit publish date' );
 		await page.click(
 			'div[aria-label="Move backward to switch to the previous month."]'
 		);
