@@ -479,9 +479,3 @@
 		@include admin-scheme(#dd823b);
 	}
 }
-
-// It is important to include these styles in all built stylesheets
-// This allows to CSS variables post CSS plugin to generate fallbacks.
-:root {
-	@include admin-scheme(#007cba);
-}
