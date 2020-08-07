@@ -7,18 +7,14 @@ import { Platform, View, Text, TouchableWithoutFeedback } from 'react-native';
  * WordPress dependencies
  */
 import { requestUnsupportedBlockFallback } from '@wordpress/react-native-bridge';
-import {
-	BottomSheet,
-	Icon,
-	withSiteCapabilities,
-	isUnsupportedBlockEditorSupported,
-} from '@wordpress/components';
+import { BottomSheet, Icon, withSiteCapabilities } from '@wordpress/components';
 import { compose, withPreferredColorScheme } from '@wordpress/compose';
 import { coreBlocks } from '@wordpress/block-library';
 import { normalizeIconObject } from '@wordpress/blocks';
 import { Component } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { help, plugins } from '@wordpress/icons';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -80,7 +76,7 @@ export class UnsupportedBlockEdit extends Component {
 			getStylesFromColorScheme,
 			attributes,
 			clientId,
-			capabilities,
+			isUnsupportedBlockEditorSupported,
 		} = this.props;
 		const infoTextStyle = getStylesFromColorScheme(
 			styles.infoText,
@@ -143,7 +139,7 @@ export class UnsupportedBlockEdit extends Component {
 						{ infoTitle }
 					</Text>
 					<Text style={ [ infoTextStyle, infoDescriptionStyle ] }>
-						{ isUnsupportedBlockEditorSupported( capabilities )
+						{ isUnsupportedBlockEditorSupported
 							? __(
 									"We are working hard to add more blocks with each release. In the meantime, you can also edit this block using your device's web browser."
 							  )
@@ -152,7 +148,7 @@ export class UnsupportedBlockEdit extends Component {
 							  ) }
 					</Text>
 				</View>
-				{ isUnsupportedBlockEditorSupported( capabilities ) && (
+				{ isUnsupportedBlockEditorSupported && (
 					<>
 						<BottomSheet.Cell
 							label={ __( 'Edit block in web browser' ) }
@@ -220,6 +216,13 @@ export class UnsupportedBlockEdit extends Component {
 	}
 }
 
-export default compose( [ withPreferredColorScheme, withSiteCapabilities ] )(
-	UnsupportedBlockEdit
-);
+export default compose( [
+	withSelect( ( select ) => {
+		const { getSettings } = select( 'core/block-editor' );
+		return {
+			isUnsupportedBlockEditorSupported:
+				getSettings( 'capabilities' ).unsupportedBlockEditor === true,
+		};
+	} ),
+	withPreferredColorScheme,
+] )( UnsupportedBlockEdit );
