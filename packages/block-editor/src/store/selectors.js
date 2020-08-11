@@ -1044,10 +1044,22 @@ export function isDraggingBlocks( state ) {
  *
  * @param {Object} state Global application state.
  *
- * @return {boolean} Whether user is dragging blocks.
+ * @return {string[]} Array of dragged block client ids.
  */
 export function getDraggedBlockClientIds( state ) {
 	return state.draggedBlocks;
+}
+
+/**
+ * Returns whether the block is being dragged.
+ *
+ * @param {Object} state    Global application state.
+ * @param {string} clientId Client id for block to check.
+ *
+ * @return {boolean} Whether the block is being dragged.
+ */
+export function isBlockBeingDragged( state, clientId ) {
+	return !! state.draggedBlocks && state.draggedBlocks.includes( clientId );
 }
 
 /**

@@ -380,7 +380,7 @@ _Parameters_
 
 _Returns_
 
--   `boolean`: Whether user is dragging blocks.
+-   `Array<string>`: Array of dragged block client ids.
 
 <a name="getFirstMultiSelectedBlockClientId" href="#getFirstMultiSelectedBlockClientId">#</a> **getFirstMultiSelectedBlockClientId**
 
@@ -769,6 +769,19 @@ _Parameters_
 _Returns_
 
 -   `boolean`: Whether an ancestor of the block is in multi-selection set.
+
+<a name="isBlockBeingDragged" href="#isBlockBeingDragged">#</a> **isBlockBeingDragged**
+
+Returns whether the block is being dragged.
+
+_Parameters_
+
+-   _state_ `Object`: Global application state.
+-   _clientId_ `string`: Client id for block to check.
+
+_Returns_
+
+-   `boolean`: Whether the block is being dragged.
 
 <a name="isBlockHighlighted" href="#isBlockHighlighted">#</a> **isBlockHighlighted**
 
