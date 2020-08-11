@@ -98,13 +98,20 @@ function BlockListBlock( {
 	// In addition to withSelect, we should favor using useSelect in this
 	// component going forward to avoid leaking new props to the public API
 	// (editor.BlockListBlock filter)
-	const { isDragging, isHighlighted } = useSelect(
+	const {
+		isDraggingBlocks,
+		getDraggedBlockClientIds,
+		isHighlighted,
+	} = useSelect(
 		( select ) => {
-			const { isDraggingBlocks, isBlockHighlighted } = select(
-				'core/block-editor'
-			);
+			const {
+				isDraggingBlocks: _isDraggingBlocks,
+				getDraggedBlockClientIds: _getDraggedBlockClientIds,
+				isBlockHighlighted,
+			} = select( 'core/block-editor' );
 			return {
-				isDragging: isDraggingBlocks(),
+				isDraggingBlocks: _isDraggingBlocks(),
+				getDraggedBlockClientIds: _getDraggedBlockClientIds,
 				isHighlighted: isBlockHighlighted( clientId ),
 			};
 		},
@@ -140,6 +147,12 @@ function BlockListBlock( {
 	const customClassName = lightBlockWrapper ? attributes.className : null;
 	const isAligned = wrapperProps && !! wrapperProps[ 'data-align' ];
 
+	let isDragging = false;
+	if ( isDraggingBlocks ) {
+		const draggedBlockClientIds = getDraggedBlockClientIds();
+		isDragging = !! draggedBlockClientIds.includes( clientId );
+	}
+
 	// The wp-block className is important for editor styles.
 	// Generate the wrapper class names handling the different states of the
 	// block.
@@ -155,8 +168,7 @@ function BlockListBlock( {
 			'is-highlighted': isHighlighted,
 			'is-multi-selected': isMultiSelected,
 			'is-reusable': isReusableBlock( blockType ),
-			'is-dragging':
-				isDragging && ( isSelected || isPartOfMultiSelection ),
+			'is-dragging': isDragging,
 			'is-typing': isTypingWithinBlock,
 			'is-focused':
 				isFocusMode && ( isSelected || isAncestorOfSelectedBlock ),
