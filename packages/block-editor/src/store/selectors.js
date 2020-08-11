@@ -1063,6 +1063,21 @@ export function isBlockBeingDragged( state, clientId ) {
 }
 
 /**
+ * Returns whether a parent/ancestor of the block is being dragged.
+ *
+ * @param {Object} state    Global application state.
+ * @param {string} clientId Client id for block to check.
+ *
+ * @return {boolean} Whether the block's ancestor is being dragged.
+ */
+export function isAncestorBeingDragged( state, clientId ) {
+	const parents = getBlockParents( state, clientId );
+	return some( parents, ( parentClientId ) =>
+		isBlockBeingDragged( state, parentClientId )
+	);
+}
+
+/**
  * Returns true if the caret is within formatted text, or false otherwise.
  *
  * @param {Object} state Global application state.

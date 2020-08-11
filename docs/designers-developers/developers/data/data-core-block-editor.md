@@ -756,6 +756,19 @@ _Returns_
 
 -   `boolean`: Whether the block as an inner block selected
 
+<a name="isAncestorBeingDragged" href="#isAncestorBeingDragged">#</a> **isAncestorBeingDragged**
+
+Returns whether a parent/ancestor of the block is being dragged.
+
+_Parameters_
+
+-   _state_ `Object`: Global application state.
+-   _clientId_ `string`: Client id for block to check.
+
+_Returns_
+
+-   `boolean`: Whether the block's ancestor is being dragged.
+
 <a name="isAncestorMultiSelected" href="#isAncestorMultiSelected">#</a> **isAncestorMultiSelected**
 
 Returns true if an ancestor of the block is multi-selected, or false
