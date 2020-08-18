@@ -1,7 +1,7 @@
 {
 	"name": "core/image",
 	"category": "media",
-	"usesContext": [ "allowBlockAlign", "allowResize", "isList" ],
+	"usesContext": [ "allowBlockAlign", "allowResize" ],
 	"attributes": {
 		"align": {
 			"type": "string"
@@ -69,10 +69,6 @@
 			"source": "attribute",
 			"selector": "figure > a",
 			"attribute": "target"
-		},
-		"isListItem": {
-			"type": "boolean",
-			"default": false
 		}
 	},
 	"supports": {
