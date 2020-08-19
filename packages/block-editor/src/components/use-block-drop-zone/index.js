@@ -18,8 +18,6 @@ import useOnBlockDrop from '../use-on-block-drop';
 
 /** @typedef {import('@wordpress/dom').WPPoint} WPPoint */
 
-/** @typedef {import('@wordpress/dom').WPPoint} WPPoint */
-
 /**
  * The orientation of a block list.
  *
