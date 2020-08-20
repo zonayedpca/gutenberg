@@ -2,20 +2,15 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-
-/**
- * Internal dependencies
- */
 import {
-	PlainText,
+	RichText,
 	__experimentalBlock as Block,
 } from '@wordpress/block-editor';
 
 export default function CodeEdit( { attributes, setAttributes } ) {
 	return (
 		<Block.pre>
-			<PlainText
-				__experimentalVersion={ 2 }
+			<RichText
 				tagName="code"
 				value={ attributes.content }
 				onChange={ ( content ) => setAttributes( { content } ) }
