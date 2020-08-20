@@ -39,6 +39,27 @@ import { link as linkIcon } from '@wordpress/icons';
  */
 import { ToolbarSubmenuIcon, ItemSubmenuIcon } from './icons';
 
+/**
+ * Given the Link block's type attribute, return the query params to give to
+ * /wp/v2/search.
+ *
+ * @param {string} type Link block's type attribute.
+ * @return {{ type?: string, subtype?: string }} Search query params.
+ */
+function getSuggestionsQuery( type ) {
+	switch ( type ) {
+		case 'post':
+		case 'page':
+			return { type: 'post', subtype: type };
+		case 'category':
+			return { type: 'term', subtype: 'category' };
+		case 'tag':
+			return { type: 'term', subtype: 'post_tag' };
+		default:
+			return {};
+	}
+}
+
 function NavigationLinkEdit( {
 	attributes,
 	hasDescendants,
@@ -58,7 +79,7 @@ function NavigationLinkEdit( {
 	mergeBlocks,
 	onReplace,
 } ) {
-	const { label, opensInNewTab, url, description, rel } = attributes;
+	const { label, type, opensInNewTab, url, description, rel } = attributes;
 	const link = {
 		url,
 		opensInNewTab,
@@ -119,8 +140,7 @@ function NavigationLinkEdit( {
 	}
 
 	async function handleCreatePage( pageTitle ) {
-		const type = 'page';
-		const page = await saveEntityRecord( 'postType', type, {
+		const page = await saveEntityRecord( 'postType', 'page', {
 			title: pageTitle,
 			status: 'publish',
 		} );
@@ -234,6 +254,7 @@ function NavigationLinkEdit( {
 								showInitialSuggestions={ true }
 								withCreateSuggestion={ userCanCreatePages }
 								createSuggestion={ handleCreatePage }
+								suggestionsQuery={ getSuggestionsQuery( type ) }
 								onChange={ ( {
 									title: newTitle = '',
 									url: newURL = '',
