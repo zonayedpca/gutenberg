@@ -38,15 +38,15 @@ import ConvertToGroupButtons from '../convert-to-group-buttons';
  * Until we refactor it, just copying the code is the simplest solution.
  *
  * @param {string} search
- * @param {Object} arguments
- * @param {number} [arguments.perPage=20]
- * @param {string} [arguments.type='post']
- * @param {string} [arguments.subtype]
+ * @param {Object} query
+ * @param {boolean} [query.isInitialSuggestions]
+ * @param {string} [query.type='post']
+ * @param {string} [query.subtype]
  * @return {Promise<Object[]>} List of suggestions
  */
 const fetchLinkSuggestions = async (
 	search,
-	{ perPage = 20, type, subtype } = {}
+	{ isInitialSuggestions, type, subtype } = {}
 ) => {
 	const queries = [];
 
@@ -55,7 +55,7 @@ const fetchLinkSuggestions = async (
 			apiFetch( {
 				path: addQueryArgs( '/wp/v2/search', {
 					search,
-					per_page: perPage,
+					per_page: isInitialSuggestions ? 3 : 20,
 					type: 'post',
 					subtype,
 				} ),
@@ -68,7 +68,7 @@ const fetchLinkSuggestions = async (
 			apiFetch( {
 				path: addQueryArgs( '/wp/v2/search', {
 					search,
-					per_page: perPage,
+					per_page: isInitialSuggestions ? 3 : 20,
 					type: 'term',
 					subtype,
 				} ),
@@ -81,7 +81,7 @@ const fetchLinkSuggestions = async (
 			apiFetch( {
 				path: addQueryArgs( '/wp/v2/search', {
 					search,
-					per_page: perPage,
+					per_page: isInitialSuggestions ? 3 : 20,
 					type: 'post-format',
 					subtype,
 				} ),
