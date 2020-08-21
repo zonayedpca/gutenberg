@@ -88,6 +88,7 @@ import { ViewerFill } from './viewer-slot';
  * @property {boolean=}                             showSuggestions        Whether to present suggestions when typing the URL.
  * @property {boolean=}                             showInitialSuggestions Whether to present initial suggestions immediately.
  * @property {boolean=}                             withCreateSuggestion   Whether to allow creation of link value from suggestion.
+ * @property {Object=}                              suggestionsQuery       Query parameters to pass along to wp.blockEditor.__experimentalFetchLinkSuggestions.
  */
 
 /**
