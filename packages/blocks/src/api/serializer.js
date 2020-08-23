@@ -71,7 +71,14 @@ export function getBlockMenuDefaultClassName( blockName ) {
 	const className =
 		'editor-block-list-item-' +
 		blockName.replace( /\//, '-' ).replace( /^core-/, '' );
-
+	console.log(
+		'applyFilters',
+		applyFilters(
+			'blocks.getBlockMenuDefaultClassName',
+			className,
+			blockName
+		)
+	);
 	return applyFilters(
 		'blocks.getBlockMenuDefaultClassName',
 		className,
