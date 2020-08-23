@@ -22,6 +22,8 @@ import { removep } from '@wordpress/autop';
  */
 const serializeBlocks = memoize(
 	( blocksForSerialization ) => {
+		console.log( 'Serialization' );
+		console.log( blocksForSerialization );
 		// A single unmodified default block is assumed to
 		// be equivalent to an empty post.
 		if (
@@ -42,7 +44,8 @@ const serializeBlocks = memoize(
 		) {
 			content = removep( content );
 		}
-
+		console.log( 'Serialization' );
+		console.log( content );
 		return content;
 	},
 	{ maxSize: 1 }
